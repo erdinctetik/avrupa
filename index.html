@@ -1005,37 +1005,37 @@ let countdownInterval = null;
 
         const TOTAL_WEEKS = 8;
         const EUROPE_FIXTURES = [
-{day:1,competition:"Şampiyonlar Ligi",home:"Sporting CP",away:"Galatasaray",date:"9 Eylül 2026 Çarşamba · 22:00 TSİ"},
-{day:1,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Roma",date:"10 Eylül 2026 Perşembe · 19:45 TSİ"},
-{day:1,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Marsilya",date:"17 Eylül 2026 Perşembe · 22:00 TSİ"},
-{day:2,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Barcelona",date:"13 Ekim 2026 Salı · 22:00 TSİ"},
-{day:2,competition:"Şampiyonlar Ligi",home:"Aston Villa",away:"Fenerbahçe",date:"14 Ekim 2026 Çarşamba · 22:00 TSİ"},
-{day:2,competition:"UEFA Avrupa Ligi",home:"Hoffenheim",away:"Beşiktaş",date:"15 Ekim 2026 Perşembe · 22:00 TSİ"},
-{day:3,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Slavia Prag",date:"20 Ekim 2026 Salı · 19:45 TSİ"},
-{day:3,competition:"Şampiyonlar Ligi",home:"Lille",away:"Galatasaray",date:"21 Ekim 2026 Çarşamba · 19:45 TSİ"},
-{day:3,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Crystal Palace",date:"22 Ekim 2026 Perşembe · 22:00 TSİ"},
-{day:4,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Stuttgart",date:"3 Kasım 2026 Salı · 19:45 TSİ"},
-{day:4,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Liverpool",date:"4 Kasım 2026 Çarşamba · 19:45 TSİ"},
-{day:4,competition:"UEFA Avrupa Ligi",home:"Celtic",away:"Beşiktaş",date:"5 Kasım 2026 Perşembe · 22:00 TSİ"},
-{day:5,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Aston Villa",date:"24 Kasım 2026 Salı · 19:45 TSİ"},
-{day:5,competition:"Şampiyonlar Ligi",home:"Shakhtar Donetsk",away:"Fenerbahçe",date:"25 Kasım 2026 Çarşamba · 22:00 TSİ"},
-{day:5,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Hapoel Beer-Sheva",date:"26 Kasım 2026 Perşembe · 19:45 TSİ"},
-{day:6,competition:"Şampiyonlar Ligi",home:"AEK Atina",away:"Galatasaray",date:"8 Aralık 2026 Salı · 22:00 TSİ"},
-{day:6,competition:"Şampiyonlar Ligi",home:"LASK Linz",away:"Fenerbahçe",date:"9 Aralık 2026 Çarşamba · 22:00 TSİ"},
-{day:6,competition:"UEFA Avrupa Ligi",home:"Bayer Leverkusen",away:"Beşiktaş",date:"10 Aralık 2026 Perşembe · 22:00 TSİ"},
-{day:7,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Feyenoord",date:"19 Ocak 2027 Salı · 19:45 TSİ"},
-{day:7,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Villarreal",date:"20 Ocak 2027 Çarşamba · 19:45 TSİ"},
-{day:7,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Union Saint-Gilloise",date:"21 Ocak 2027 Perşembe · 19:45 TSİ"},
-{day:8,competition:"Şampiyonlar Ligi",home:"Paris Saint-Germain",away:"Galatasaray",date:"27 Ocak 2027 Çarşamba · 22:00 TSİ"},
-{day:8,competition:"Şampiyonlar Ligi",home:"Atletico Madrid",away:"Fenerbahçe",date:"27 Ocak 2027 Çarşamba · 22:00 TSİ"},
-{day:8,competition:"UEFA Avrupa Ligi",home:"Omonia",away:"Beşiktaş",date:"28 Ocak 2027 Perşembe · 22:00 TSİ"}
+{day:1,competition:"Şampiyonlar Ligi",home:"Sporting CP",away:"Galatasaray",date:"9 Eylül 2026 Çarşamba · 22:00 "},
+{day:1,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Roma",date:"10 Eylül 2026 Perşembe · 19:45 "},
+{day:1,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Marsilya",date:"17 Eylül 2026 Perşembe · 22:00 "},
+{day:2,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Barcelona",date:"13 Ekim 2026 Salı · 22:00 "},
+{day:2,competition:"Şampiyonlar Ligi",home:"Aston Villa",away:"Fenerbahçe",date:"14 Ekim 2026 Çarşamba · 22:00 "},
+{day:2,competition:"UEFA Avrupa Ligi",home:"Hoffenheim",away:"Beşiktaş",date:"15 Ekim 2026 Perşembe · 22:00 "},
+{day:3,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Slavia Prag",date:"20 Ekim 2026 Salı · 19:45 "},
+{day:3,competition:"Şampiyonlar Ligi",home:"Lille",away:"Galatasaray",date:"21 Ekim 2026 Çarşamba · 19:45 "},
+{day:3,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Crystal Palace",date:"22 Ekim 2026 Perşembe · 22:00 "},
+{day:4,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Stuttgart",date:"3 Kasım 2026 Salı · 19:45 "},
+{day:4,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Liverpool",date:"4 Kasım 2026 Çarşamba · 19:45 "},
+{day:4,competition:"UEFA Avrupa Ligi",home:"Celtic",away:"Beşiktaş",date:"5 Kasım 2026 Perşembe · 22:00 "},
+{day:5,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Aston Villa",date:"24 Kasım 2026 Salı · 19:45 "},
+{day:5,competition:"Şampiyonlar Ligi",home:"Shakhtar Donetsk",away:"Fenerbahçe",date:"25 Kasım 2026 Çarşamba · 22:00 "},
+{day:5,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Hapoel Beer-Sheva",date:"26 Kasım 2026 Perşembe · 19:45 "},
+{day:6,competition:"Şampiyonlar Ligi",home:"AEK Atina",away:"Galatasaray",date:"8 Aralık 2026 Salı · 22:00 "},
+{day:6,competition:"Şampiyonlar Ligi",home:"LASK Linz",away:"Fenerbahçe",date:"9 Aralık 2026 Çarşamba · 22:00 "},
+{day:6,competition:"UEFA Avrupa Ligi",home:"Bayer Leverkusen",away:"Beşiktaş",date:"10 Aralık 2026 Perşembe · 22:00 "},
+{day:7,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Feyenoord",date:"19 Ocak 2027 Salı · 19:45 "},
+{day:7,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Villarreal",date:"20 Ocak 2027 Çarşamba · 19:45 "},
+{day:7,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Union Saint-Gilloise",date:"21 Ocak 2027 Perşembe · 19:45 "},
+{day:8,competition:"Şampiyonlar Ligi",home:"Paris Saint-Germain",away:"Galatasaray",date:"27 Ocak 2027 Çarşamba · 22:00 "},
+{day:8,competition:"Şampiyonlar Ligi",home:"Atletico Madrid",away:"Fenerbahçe",date:"27 Ocak 2027 Çarşamba · 22:00 "},
+{day:8,competition:"UEFA Avrupa Ligi",home:"Omonia",away:"Beşiktaş",date:"28 Ocak 2027 Perşembe · 22:00 "}
         ];
         // --- AVRUPA KUPALARI OTOMATİK FİKSTÜR ---
         let leagueMainTeams = ["Galatasaray", "Fenerbahçe", "Beşiktaş"];
         let leagueWeeklyOpponents = {};
         function normalizeLeagueTeamName(name) { return (name || "").trim().toLocaleLowerCase('tr-TR'); }
         function rebuildDynamicMatches() { matches.length=0; EUROPE_FIXTURES.forEach((f,idx)=>matches.push({id:`m${f.day}_${idx+1}`,day:f.day,date:f.date,group:f.competition,home:f.home,away:f.away})); extractTeams(); }
-        function renderLeagueFixtureAdminControls() { const box=document.getElementById('leagueFixtureAdminBox'); if(!box)return; let html='<div style="font-size:11px;color:#059669;font-weight:bold;margin-bottom:8px;">✓ Rakipler, maç günleri ve TSİ saatleri otomatik yüklendi.</div>'; for(let w=1;w<=TOTAL_WEEKS;w++){html+=`<details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;background:#fff;" ${w===currentDay?'open':''}><summary style="cursor:pointer;padding:8px 10px;background:#e0e7ff;color:#1e3a8a;font-size:12px;font-weight:900;border-radius:8px;">${w}. Maç Turu</summary><div style="padding:8px;">`; EUROPE_FIXTURES.filter(f=>f.day===w).forEach(f=>html+=`<div style="padding:6px;border-bottom:1px solid #f1f5f9;font-size:11px;"><b>${f.home} - ${f.away}</b><br><span style="color:#64748b;">${f.competition} · ${f.date}</span></div>`); html+='</div></details>';} box.innerHTML=html; }
+        function renderLeagueFixtureAdminControls() { const box=document.getElementById('leagueFixtureAdminBox'); if(!box)return; let html='<div style="font-size:11px;color:#059669;font-weight:bold;margin-bottom:8px;">✓ Rakipler, maç günleri ve  saatleri otomatik yüklendi.</div>'; for(let w=1;w<=TOTAL_WEEKS;w++){html+=`<details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;background:#fff;" ${w===currentDay?'open':''}><summary style="cursor:pointer;padding:8px 10px;background:#e0e7ff;color:#1e3a8a;font-size:12px;font-weight:900;border-radius:8px;">${w}. Maç Turu</summary><div style="padding:8px;">`; EUROPE_FIXTURES.filter(f=>f.day===w).forEach(f=>html+=`<div style="padding:6px;border-bottom:1px solid #f1f5f9;font-size:11px;"><b>${f.home} - ${f.away}</b><br><span style="color:#64748b;">${f.competition} · ${f.date}</span></div>`); html+='</div></details>';} box.innerHTML=html; }
         function collectLeagueFixtureAdminControls(){ return; }
         const APP_DATA_COLLECTION = "superlig4_appData";
         const USERS_COLLECTION = "superlig4_users";
