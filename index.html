@@ -68,11 +68,14 @@
         .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
         .match-card { background: var(--card-bg); border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid var(--secondary); display: flex; flex-direction: column; gap: 12px; position: relative; }
         .match-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-weight: bold; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
-        .match-teams { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
-        .team { flex: 1; text-align: center; font-weight: bold; font-size: 13px; line-height: 1.2; }
+        .match-teams { display:grid; grid-template-columns:minmax(72px,1fr) auto minmax(72px,1fr); align-items:center; gap:5px; width:100%; }
+        .team { flex:1 1 0; min-width:0; max-width:100px; text-align:center; font-weight:bold; font-size:clamp(9px,1.05vw,12px); line-height:1.08; overflow:visible; }
+        .team-stack { width:100%; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; }
+        .team-logo { width:34px; height:34px; object-fit:contain; flex-shrink:0; display:block; }
+        .team-name-text { display:-webkit-box; width:100%; overflow:hidden; white-space:normal; overflow-wrap:anywhere; word-break:normal; text-align:center; -webkit-box-orient:vertical; -webkit-line-clamp:3; line-clamp:3; min-height:2.16em; }
         .team.home { text-align: right; }
         .team.away { text-align: left; }
-        .score-inputs { display: flex; align-items: center; gap: 5px; }
+        .score-inputs { display:flex; align-items:center; justify-content:center; gap:5px; flex:0 0 auto; }
         .score-inputs input { width: 40px; height: 40px; text-align: center; font-size: 18px; font-weight: bold; border: 2px solid var(--border-color); border-radius: 6px; background: #f9fafb; color: var(--primary); outline: none; -moz-appearance: textfield;}
         .score-inputs input::-webkit-outer-spin-button, .score-inputs input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .score-inputs input:disabled { background: var(--border-color); color: #4b5563; cursor: not-allowed; border: none;}
@@ -607,6 +610,7 @@
                     <button class="btn-blue" onclick="showBracket()">Eşleşmeler</button>
                     <button class="btn-gold" onclick="showLeaderboard()">Sıralama 🏆</button>               
 <button class="btn-purple" onclick="showReports()">📊 İstatistik</button>
+                    <a href="https://erdinctetik.github.io/dk/" target="_blank" rel="noopener noreferrer" title="Dünya Kupası Tahminleri" style="flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 12px;border-radius:8px;background:linear-gradient(135deg,#0f766e,#115e59);color:#fff;text-decoration:none;font-size:11px;font-weight:900;white-space:nowrap;box-shadow:0 2px 5px rgba(0,0,0,.12);">Dünya Kupası</a>
                 </div>
             </div>
 
@@ -933,16 +937,6 @@
                 <datalist id="unitOptions"></datalist>
                 <div id="unitSettingsBox" style="max-height:240px;overflow-y:auto;"></div>
             </div>
-            <div style="margin-top:15px;background:#fff7ed;padding:15px;border-radius:8px;border:1px solid #fdba74;">
-                <label style="font-weight:bold;color:#c2410c;display:block;margin-bottom:4px;">🗑️ Kullanıcı Yönetimi</label>
-                <div style="font-size:11px;color:#9a3412;margin-bottom:10px;">Kullanıcıyı ve kullanıcıya ait tüm tahminleri kalıcı olarak siler.</div>
-                <div id="adminUserDeleteBox" style="max-height:240px;overflow-y:auto;"></div>
-            </div>
-            <div style="margin-top:15px;background:#fef2f2;padding:15px;border-radius:8px;border:1px solid #fca5a5;">
-                <label style="font-weight:bold;color:#b91c1c;display:block;margin-bottom:4px;">⚽ Girilen Maç Sonuçlarını Sil</label>
-                <div style="font-size:11px;color:#991b1b;margin-bottom:10px;">Yalnızca seçilen maçın gerçekleşen skorunu siler. Kullanıcı tahminleri silinmez.</div>
-                <div id="adminResultDeleteBox" style="max-height:280px;overflow-y:auto;"></div>
-            </div>
             <button class="btn-admin" style="width: 100%; margin-top: 20px;" onclick="saveAdminSettings()">Ayarları Kaydet</button>
         </div>
     </div>
@@ -990,37 +984,37 @@ let countdownInterval = null;
 
         const TOTAL_WEEKS = 8;
         const EUROPE_FIXTURES = [
-{day:1,competition:"Şampiyonlar Ligi",home:"Sporting CP",away:"Galatasaray",date:"9 Eylül 2026 Çarşamba · 22:00 TSİ"},
-{day:1,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Roma",date:"10 Eylül 2026 Perşembe · 19:45 TSİ"},
-{day:1,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Marsilya",date:"17 Eylül 2026 Perşembe · 22:00 TSİ"},
-{day:2,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Barcelona",date:"13 Ekim 2026 Salı · 22:00 TSİ"},
-{day:2,competition:"Şampiyonlar Ligi",home:"Aston Villa",away:"Fenerbahçe",date:"14 Ekim 2026 Çarşamba · 22:00 TSİ"},
-{day:2,competition:"UEFA Avrupa Ligi",home:"Hoffenheim",away:"Beşiktaş",date:"15 Ekim 2026 Perşembe · 22:00 TSİ"},
-{day:3,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Slavia Prag",date:"20 Ekim 2026 Salı · 19:45 TSİ"},
-{day:3,competition:"Şampiyonlar Ligi",home:"Lille",away:"Galatasaray",date:"21 Ekim 2026 Çarşamba · 19:45 TSİ"},
-{day:3,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Crystal Palace",date:"22 Ekim 2026 Perşembe · 22:00 TSİ"},
-{day:4,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Stuttgart",date:"3 Kasım 2026 Salı · 19:45 TSİ"},
-{day:4,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Liverpool",date:"4 Kasım 2026 Çarşamba · 19:45 TSİ"},
-{day:4,competition:"UEFA Avrupa Ligi",home:"Celtic",away:"Beşiktaş",date:"5 Kasım 2026 Perşembe · 22:00 TSİ"},
-{day:5,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Aston Villa",date:"24 Kasım 2026 Salı · 19:45 TSİ"},
-{day:5,competition:"Şampiyonlar Ligi",home:"Shakhtar Donetsk",away:"Fenerbahçe",date:"25 Kasım 2026 Çarşamba · 22:00 TSİ"},
-{day:5,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Hapoel Beer-Sheva",date:"26 Kasım 2026 Perşembe · 19:45 TSİ"},
-{day:6,competition:"Şampiyonlar Ligi",home:"AEK Atina",away:"Galatasaray",date:"8 Aralık 2026 Salı · 22:00 TSİ"},
-{day:6,competition:"Şampiyonlar Ligi",home:"LASK Linz",away:"Fenerbahçe",date:"9 Aralık 2026 Çarşamba · 22:00 TSİ"},
-{day:6,competition:"UEFA Avrupa Ligi",home:"Bayer Leverkusen",away:"Beşiktaş",date:"10 Aralık 2026 Perşembe · 22:00 TSİ"},
-{day:7,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Feyenoord",date:"19 Ocak 2027 Salı · 19:45 TSİ"},
-{day:7,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Villarreal",date:"20 Ocak 2027 Çarşamba · 19:45 TSİ"},
-{day:7,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Union Saint-Gilloise",date:"21 Ocak 2027 Perşembe · 19:45 TSİ"},
-{day:8,competition:"Şampiyonlar Ligi",home:"Paris Saint-Germain",away:"Galatasaray",date:"27 Ocak 2027 Çarşamba · 22:00 TSİ"},
-{day:8,competition:"Şampiyonlar Ligi",home:"Atletico Madrid",away:"Fenerbahçe",date:"27 Ocak 2027 Çarşamba · 22:00 TSİ"},
-{day:8,competition:"UEFA Avrupa Ligi",home:"Omonia",away:"Beşiktaş",date:"28 Ocak 2027 Perşembe · 22:00 TSİ"}
+{day:1,competition:"Şampiyonlar Ligi",home:"Sporting CP",away:"Galatasaray",date:"9 Eylül 2026 Çarşamba · 22:00 "},
+{day:1,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Roma",date:"10 Eylül 2026 Perşembe · 19:45 "},
+{day:1,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Marsilya",date:"17 Eylül 2026 Perşembe · 22:00 "},
+{day:2,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Barcelona",date:"13 Ekim 2026 Salı · 22:00 "},
+{day:2,competition:"Şampiyonlar Ligi",home:"Aston Villa",away:"Fenerbahçe",date:"14 Ekim 2026 Çarşamba · 22:00 "},
+{day:2,competition:"UEFA Avrupa Ligi",home:"Hoffenheim",away:"Beşiktaş",date:"15 Ekim 2026 Perşembe · 22:00 "},
+{day:3,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Slavia Prag",date:"20 Ekim 2026 Salı · 19:45 "},
+{day:3,competition:"Şampiyonlar Ligi",home:"Lille",away:"Galatasaray",date:"21 Ekim 2026 Çarşamba · 19:45 "},
+{day:3,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Crystal Palace",date:"22 Ekim 2026 Perşembe · 22:00 "},
+{day:4,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Stuttgart",date:"3 Kasım 2026 Salı · 19:45 "},
+{day:4,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Liverpool",date:"4 Kasım 2026 Çarşamba · 19:45 "},
+{day:4,competition:"UEFA Avrupa Ligi",home:"Celtic",away:"Beşiktaş",date:"5 Kasım 2026 Perşembe · 22:00 "},
+{day:5,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Aston Villa",date:"24 Kasım 2026 Salı · 19:45 "},
+{day:5,competition:"Şampiyonlar Ligi",home:"Shakhtar Donetsk",away:"Fenerbahçe",date:"25 Kasım 2026 Çarşamba · 22:00 "},
+{day:5,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Hapoel Beer-Sheva",date:"26 Kasım 2026 Perşembe · 19:45 "},
+{day:6,competition:"Şampiyonlar Ligi",home:"AEK Atina",away:"Galatasaray",date:"8 Aralık 2026 Salı · 22:00 "},
+{day:6,competition:"Şampiyonlar Ligi",home:"LASK Linz",away:"Fenerbahçe",date:"9 Aralık 2026 Çarşamba · 22:00 "},
+{day:6,competition:"UEFA Avrupa Ligi",home:"Bayer Leverkusen",away:"Beşiktaş",date:"10 Aralık 2026 Perşembe · 22:00 "},
+{day:7,competition:"Şampiyonlar Ligi",home:"Galatasaray",away:"Feyenoord",date:"19 Ocak 2027 Salı · 19:45 "},
+{day:7,competition:"Şampiyonlar Ligi",home:"Fenerbahçe",away:"Villarreal",date:"20 Ocak 2027 Çarşamba · 19:45 "},
+{day:7,competition:"UEFA Avrupa Ligi",home:"Beşiktaş",away:"Union Saint-Gilloise",date:"21 Ocak 2027 Perşembe · 19:45 "},
+{day:8,competition:"Şampiyonlar Ligi",home:"Paris Saint-Germain",away:"Galatasaray",date:"27 Ocak 2027 Çarşamba · 22:00 "},
+{day:8,competition:"Şampiyonlar Ligi",home:"Atletico Madrid",away:"Fenerbahçe",date:"27 Ocak 2027 Çarşamba · 22:00 "},
+{day:8,competition:"UEFA Avrupa Ligi",home:"Omonia",away:"Beşiktaş",date:"28 Ocak 2027 Perşembe · 22:00 "}
         ];
         // --- AVRUPA KUPALARI OTOMATİK FİKSTÜR ---
         let leagueMainTeams = ["Galatasaray", "Fenerbahçe", "Beşiktaş"];
         let leagueWeeklyOpponents = {};
         function normalizeLeagueTeamName(name) { return (name || "").trim().toLocaleLowerCase('tr-TR'); }
         function rebuildDynamicMatches() { matches.length=0; EUROPE_FIXTURES.forEach((f,idx)=>matches.push({id:`m${f.day}_${idx+1}`,day:f.day,date:f.date,group:f.competition,home:f.home,away:f.away})); extractTeams(); }
-        function renderLeagueFixtureAdminControls() { const box=document.getElementById('leagueFixtureAdminBox'); if(!box)return; let html='<div style="font-size:11px;color:#059669;font-weight:bold;margin-bottom:8px;">✓ Rakipler, maç günleri ve TSİ saatleri otomatik yüklendi.</div>'; for(let w=1;w<=TOTAL_WEEKS;w++){html+=`<details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;background:#fff;" ${w===currentDay?'open':''}><summary style="cursor:pointer;padding:8px 10px;background:#e0e7ff;color:#1e3a8a;font-size:12px;font-weight:900;border-radius:8px;">${w}. Maç Turu</summary><div style="padding:8px;">`; EUROPE_FIXTURES.filter(f=>f.day===w).forEach(f=>html+=`<div style="padding:6px;border-bottom:1px solid #f1f5f9;font-size:11px;"><b>${f.home} - ${f.away}</b><br><span style="color:#64748b;">${f.competition} · ${f.date}</span></div>`); html+='</div></details>';} box.innerHTML=html; }
+        function renderLeagueFixtureAdminControls() { const box=document.getElementById('leagueFixtureAdminBox'); if(!box)return; let html='<div style="font-size:11px;color:#059669;font-weight:bold;margin-bottom:8px;">✓ Rakipler, maç günleri ve  saatleri otomatik yüklendi.</div>'; for(let w=1;w<=TOTAL_WEEKS;w++){html+=`<details style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:6px;background:#fff;" ${w===currentDay?'open':''}><summary style="cursor:pointer;padding:8px 10px;background:#e0e7ff;color:#1e3a8a;font-size:12px;font-weight:900;border-radius:8px;">${w}. Maç Turu</summary><div style="padding:8px;">`; EUROPE_FIXTURES.filter(f=>f.day===w).forEach(f=>html+=`<div style="padding:6px;border-bottom:1px solid #f1f5f9;font-size:11px;"><b style="display:flex;align-items:center;gap:6px;">${getTeamLogo(f.home)} ${f.home} - ${f.away} ${getTeamLogo(f.away)}</b><br><span style="color:#64748b;">${f.competition} · ${f.date}</span></div>`); html+='</div></details>';} box.innerHTML=html; }
         function collectLeagueFixtureAdminControls(){ return; }
         const APP_DATA_COLLECTION = "superlig4_appData";
         const USERS_COLLECTION = "superlig4_users";
@@ -2188,35 +2182,6 @@ function syncAllMatchVisibilityFromRounds() {
         if(sel) applyRoundVisibilityToMatches(day, sel.value === 'true');
     }
 }
-function renderAdminUserDeleteControls() {
-    const box=document.getElementById('adminUserDeleteBox'); if(!box)return;
-    const users=Object.keys(savedUsers||{}).filter(u=>u!=="GERCEKLIK_ADMIN_HESABI").sort((a,b)=>a.localeCompare(b,'tr'));
-    box.innerHTML=users.length ? users.map(u=>`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;margin-bottom:5px;background:#fff;border:1px solid #fed7aa;border-radius:6px;"><span style="font-size:12px;font-weight:bold;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">👤 ${u}</span><button type="button" onclick="adminDeleteUser('${encodeURIComponent(u)}')" style="background:#dc2626;color:#fff;border:0;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:bold;cursor:pointer;">Sil</button></div>`).join('') : '<div style="font-size:11px;color:#94a3b8;text-align:center;padding:8px;">Kayıtlı kullanıcı yok.</div>';
-}
-function adminDeleteUser(encodedUser) {
-    if(!isAdminMode) return;
-    const user=decodeURIComponent(encodedUser);
-    if(!confirm(`"${user}" kullanıcısı ve tüm tahminleri kalıcı olarak silinsin mi?`)) return;
-    db.collection(USERS_COLLECTION).doc(user).delete().then(()=>{
-        if(currentAuthenticatedUser===user) currentAuthenticatedUser='';
-        if(currentViewingUser===user) currentViewingUser='ALL';
-        delete userUnits[user]; delete clAccess[user];
-        return db.collection(APP_DATA_COLLECTION).doc(ADMIN_DOC_ID).set({userUnits:userUnits,clAccess:clAccess},{merge:true});
-    }).then(()=>{renderAdminUserDeleteControls();renderUnitAdminControls();renderClAccessControls();alert('Kullanıcı silindi.');}).catch(e=>alert('Kullanıcı silme hatası: '+e.message));
-}
-function renderAdminResultDeleteControls() {
-    const box=document.getElementById('adminResultDeleteBox'); if(!box)return;
-    const rows=matches.filter(m=>realResults[m.id]!==undefined);
-    box.innerHTML=rows.length ? rows.map(m=>{const r=realResults[m.id];return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;margin-bottom:5px;background:#fff;border:1px solid #fecaca;border-radius:6px;"><span style="font-size:11px;color:#334155;"><b>${m.home} ${r.home} - ${r.away} ${m.away}</b><br><small>${m.date}</small></span><button type="button" onclick="adminDeleteMatchResult('${m.id}')" style="background:#dc2626;color:#fff;border:0;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:bold;cursor:pointer;white-space:nowrap;">Sonucu Sil</button></div>`;}).join('') : '<div style="font-size:11px;color:#94a3b8;text-align:center;padding:8px;">Silinebilecek maç sonucu yok.</div>';
-}
-function adminDeleteMatchResult(matchId) {
-    if(!isAdminMode || !realResults[matchId]) return;
-    const m=matches.find(x=>x.id===matchId); const label=m?`${m.home} - ${m.away}`:matchId;
-    if(!confirm(`${label} maçının gerçekleşen skoru silinsin mi? Kullanıcı tahminleri korunacak.`)) return;
-    delete realResults[matchId];
-    if(clRealAdvance && clRealAdvance[matchId]) { delete clRealAdvance[matchId]; }
-    db.collection(APP_DATA_COLLECTION).doc(ADMIN_DOC_ID).set({realResults:realResults,clRealAdvance:clRealAdvance},{merge:true}).then(()=>{renderAdminResultDeleteControls();renderMatches(currentDay);renderGroupPanel();renderTabs();alert('Maç sonucu silindi.');}).catch(e=>alert('Sonuç silme hatası: '+e.message));
-}
 function renderUnitAdminControls() {
     const box = document.getElementById('unitSettingsBox');
     if(!box) return;
@@ -2851,13 +2816,13 @@ function toggleMatchPredictions(clickedBtn, targetId) {
                     
                     let matchHeaderAndScore = `
                         <div class="match-teams" style="margin-top: 5px; margin-bottom: 5px;">
-                            <div class="team home">${displayHome}</div>
+                            <div class="team home">${teamWithLogo(displayHome)}</div>
                             <div class="score-inputs">
                                 <input type="number" min="0" max="20" id="home_${match.id}" value="${rH}" ${inputsLocked}>
                                 <span class="vs">-</span>
                                 <input type="number" min="0" max="20" id="away_${match.id}" value="${rA}" ${inputsLocked}>
                             </div>
-                            <div class="team away">${displayAway}</div>
+                            <div class="team away">${teamWithLogo(displayAway)}</div>
                         </div>`;
 // ✅ TAHMİN ORAN ÇUBUĞU
                     let homeWin = 0, draw = 0, awayWin = 0, totalPreds = 0;
@@ -3032,13 +2997,13 @@ matchMiddleHTML = `
                     }
                     matchMiddleHTML = `
                         <div class="match-teams">
-                            <div class="team home">${displayHome}</div>
+                            <div class="team home">${teamWithLogo(displayHome)}</div>
                             <div class="score-inputs">
                                 <input type="number" min="0" max="20" id="home_${match.id}" value="${pHome}" ${isLocked ? 'disabled' : ''}>
                                 <span class="vs">-</span>
                                 <input type="number" min="0" max="20" id="away_${match.id}" value="${pAway}" ${isLocked ? 'disabled' : ''}>
                             </div>
-                            <div class="team away">${displayAway}</div>
+                            <div class="team away">${teamWithLogo(displayAway)}</div>
                         </div>
                         ${matchCountDetail(match.id)}
                         ${rvRowHTML}
@@ -3273,6 +3238,16 @@ function validateR32Selections(currentSelect) {
             "Portekiz":"pt","Demokratik Kongo Cum.":"cd","Özbekistan":"uz","Kolombiya":"co",
             "İngiltere":"gb-eng","Hırvatistan":"hr","Gana":"gh","Panama":"pa"
         };
+        // Gömülü vektör takım armaları: dış bağlantı yok, pikselleşmez.
+        const embeddedClubLogos = {"Galatasaray":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNhOTA0MzIiIHN0cm9rZT0iI2ZkYjkxMiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZkYjkxMiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZGI5MTIiPkdTPC90ZXh0Pjwvc3ZnPg==","Fenerbahçe":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMxMjNiNzUiIHN0cm9rZT0iI2Y3ZGMwNSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y3ZGMwNSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmN2RjMDUiPkZCPC90ZXh0Pjwvc3ZnPg==","Beşiktaş":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMxMTExMTEiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPkJKSzwvdGV4dD48L3N2Zz4=","Sporting CP":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMwNzhhNTAiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPlNDUDwvdGV4dD48L3N2Zz4=","Roma":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM4ZTFmMmQiIHN0cm9rZT0iI2Y0YTkwMCIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y0YTkwMCIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmNGE5MDAiPlJPTTwvdGV4dD48L3N2Zz4=","Marsilya":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMxNTliZDciIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPk9NPC90ZXh0Pjwvc3ZnPg==","Barcelona":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNhNTAwNDQiIHN0cm9rZT0iIzAwNGQ5OCIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwNGQ5OCIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMwMDRkOTgiPkZDQjwvdGV4dD48L3N2Zz4=","Aston Villa":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM2NzBlMzYiIHN0cm9rZT0iIzk1YmZlNSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzk1YmZlNSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiM5NWJmZTUiPkFWTDwvdGV4dD48L3N2Zz4=","Hoffenheim":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMxOTYxYWUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPlRTRzwvdGV4dD48L3N2Zz4=","Slavia Prag":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNkNzE5MjAiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPlNMQTwvdGV4dD48L3N2Zz4=","Lille":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNkNzE5MjAiIHN0cm9rZT0iIzFiMmI1NSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiMmI1NSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMxYjJiNTUiPkxPU0M8L3RleHQ+PC9zdmc+","Crystal Palace":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMxYjQ1OGYiIHN0cm9rZT0iI2M0MTIyZSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2M0MTIyZSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNjNDEyMmUiPkNQPC90ZXh0Pjwvc3ZnPg==","Stuttgart":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNlMzIyMTkiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPlZGQjwvdGV4dD48L3N2Zz4=","Liverpool":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNjODEwMmUiIHN0cm9rZT0iIzAwYjJhOSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwYjJhOSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMwMGIyYTkiPkxGQzwvdGV4dD48L3N2Zz4=","Celtic":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMwMTg3NDkiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPkNGQzwvdGV4dD48L3N2Zz4=","Shakhtar Donetsk":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmNTgyMjAiIHN0cm9rZT0iIzExMTExMSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzExMTExMSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMxMTExMTEiPlNIRDwvdGV4dD48L3N2Zz4=","Hapoel Beer-Sheva":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNkNzE5MjAiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPkhCUzwvdGV4dD48L3N2Zz4=","AEK Atina":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmNGMzMDAiIHN0cm9rZT0iIzExMTExMSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzExMTExMSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMxMTExMTEiPkFFSzwvdGV4dD48L3N2Zz4=","LASK Linz":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMxMTExMTEiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPkxBU0s8L3RleHQ+PC9zdmc+","Bayer Leverkusen":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNlMzIyMTkiIHN0cm9rZT0iIzExMTExMSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzExMTExMSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMxMTExMTEiPkIwNDwvdGV4dD48L3N2Zz4=","Feyenoord":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNkNzE5MjAiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPkZFWTwvdGV4dD48L3N2Zz4=","Villarreal":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmNWUzNDIiIHN0cm9rZT0iIzEyNTNhNCIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzEyNTNhNCIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMxMjUzYTQiPlZJTDwvdGV4dD48L3N2Zz4=","Union Saint-Gilloise":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmNWQwMDAiIHN0cm9rZT0iIzE1M2I3YSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzE1M2I3YSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMxNTNiN2EiPlVTRzwvdGV4dD48L3N2Zz4=","Paris Saint-Germain":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMwMDQxNzAiIHN0cm9rZT0iI2RhMjkxYyIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2RhMjkxYyIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNkYTI5MWMiPlBTRzwvdGV4dD48L3N2Zz4=","Atletico Madrid":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNjYjM1MjQiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPkFUTTwvdGV4dD48L3N2Zz4=","Omonia":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMxMjg1M2YiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIuOSIvPjx0ZXh0IHg9IjMyIiB5PSIzOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiPk9NTzwvdGV4dD48L3N2Zz4="};
+        function getTeamLogo(name) {
+            const src=embeddedClubLogos[name];
+            if(!src) return '';
+            return `<img class="team-logo" src="${src}" alt="${name} arması" title="${name}">`;
+        }
+        function teamWithLogo(name) {
+            return `<span class="team-stack">${getTeamLogo(name)}<span class="team-name-text" title="${name}">${name}</span></span>`;
+        }
         function getFlag(name) {
             let code = countryFlags[name];
             if(!code) return '';
@@ -4032,8 +4007,6 @@ renderLeagueFixtureAdminControls();
 renderClAccessControls();
 renderClMatchLockControls();
 renderMainMatchOpenControls();
-renderAdminUserDeleteControls();
-renderAdminResultDeleteControls();
             document.getElementById('adminSettingsOverlay').style.display = 'flex';
         }
 
