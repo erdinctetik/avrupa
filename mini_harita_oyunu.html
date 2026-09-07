@@ -1942,5 +1942,35 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   }
 })();
 </script>
+
+<script id="zorunluRumuzAkisi">
+(function(){
+  const KEY='haritaBulmacasi_global_oyuncu_adi';
+  const SESSION='haritaBulmacasi_rumuz_soruldu';
+  function sor(){
+    if(sessionStorage.getItem(SESSION)==='1' && (localStorage.getItem(KEY)||'').trim().length>=2) return true;
+    let mevcut=(localStorage.getItem(KEY)||'').trim();
+    while(true){
+      const giris=prompt('Tüm harita oyunlarında kullanılacak adınızı veya rumuzunuzu girin:',mevcut);
+      if(giris===null||giris.trim().length<2){
+        alert('Oyun paneline girmek için ad veya rumuz zorunludur.');
+        return false;
+      }
+      mevcut=giris.trim();
+      localStorage.setItem(KEY,mevcut);
+      sessionStorage.setItem(SESSION,'1');
+      return true;
+    }
+  }
+  window.zorunluRumuzKontrol=sor;
+  window.addEventListener('load',function(){
+    const mode=new URLSearchParams(location.search).get('mode')||'player';
+    if(mode==='player'&&!sor()){
+      const alan=document.getElementById('aktifOyunAlani')||document.getElementById('hubGames');
+      if(alan)alan.innerHTML='<div style="padding:18px;color:#b91c1c;font-weight:800">Oyunları görmek için ad veya rumuz girmelisiniz.</div>';
+    }
+  });
+})();
+</script>
 </body>
 </html>
