@@ -2144,8 +2144,32 @@ function extractRealFastData() {
         }
         // ------------------------------------------------
 
+        function ekrandakiKaydedilmemisTahminleriAl() {
+            const taslak = {};
+            document.querySelectorAll('#matchesGrid input[id^="home_"], #matchesGrid input[id^="away_"]').forEach(input => {
+                if (input.value !== '') taslak[input.id] = input.value;
+            });
+            document.querySelectorAll('#matchesGrid .rv-btn[data-rv].rv-on').forEach(btn => {
+                taslak['rv:' + btn.getAttribute('data-rv')] = true;
+            });
+            return taslak;
+        }
+        function ekrandakiKaydedilmemisTahminleriGeriYukle(taslak) {
+            if (!taslak) return;
+            Object.entries(taslak).forEach(([id, deger]) => {
+                if (id.startsWith('rv:')) {
+                    const btn = document.querySelector('.rv-btn[data-rv="' + id.slice(3) + '"]');
+                    if (btn && deger) btn.classList.add('rv-on');
+                    return;
+                }
+                const input = document.getElementById(id);
+                if (input && !input.disabled) input.value = deger;
+            });
+        }
+
         function initFirebaseListeners() {
             db.collection(APP_DATA_COLLECTION).doc(ADMIN_DOC_ID).onSnapshot((doc) => {
+                const kaydedilmemisTaslak = ekrandakiKaydedilmemisTahminleriAl();
                 if (doc.exists) {
                     let data = doc.data();
                     realResults = data.realResults || {};
@@ -2177,6 +2201,7 @@ updateAnnouncementDisplay();
                 }
                 rebuildDynamicMatches();
                 renderMatches(currentDay);
+                ekrandakiKaydedilmemisTahminleriGeriYukle(kaydedilmemisTaslak);
                 renderGroupPanel();
                 renderTabs();
                 // Açık duran "Eşleşmeler" penceresi varsa yeni verilerle yeniden çiz (tur atlayanlar güncellensin)
@@ -2185,6 +2210,7 @@ updateAnnouncementDisplay();
             });
 
             db.collection(USERS_COLLECTION).onSnapshot((snapshot) => {
+                const kaydedilmemisTaslak = ekrandakiKaydedilmemisTahminleriAl();
                 savedUsers = {};
                 snapshot.forEach((doc) => {
                     savedUsers[doc.id] = doc.data(); 
@@ -2196,6 +2222,7 @@ updateAnnouncementDisplay();
                 } else if(currentViewingUser === "ALL") {
                     renderMatches(currentDay);
                 }
+                ekrandakiKaydedilmemisTahminleriGeriYukle(kaydedilmemisTaslak);
             });
         }
 
