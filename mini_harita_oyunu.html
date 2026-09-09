@@ -926,11 +926,6 @@
 
              document.getElementById('mesajAlani').innerHTML =
                  `✅ Gerçek Konum: <b class="text-green-600">${hedefFlag} ${hedefIsmi}</b> <br> Seçim: <b class="text-red-600">${selectionFlag} ${selectionName}</b> <br> Hedefe uzaklık: <span class="text-blue-600 font-bold">${formattedMesafe} km</span>`;
-             // Konum adi cozumlenemediyse sebebini kullaniciya goster.
-             if(window.__sonGeocodeHatasi){
-                 document.getElementById('mesajAlani').innerHTML +=
-                     `<br><span class="text-amber-600 text-xs">⚠️ Konum adları alınamadı: ${window.__sonGeocodeHatasi}</span>`;
-             }
 
              
              localStorage.setItem(STORAGE_KEY_TAHMIN, 'true');
@@ -2084,52 +2079,24 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 <script id="yalnizKonumAdiVeTurEtiketiFix">
 /* SADECE KONUM ADI VE TUR ETIKETLERI: S=Secim, K=Konum */
 (function(){
-  const AD_CACHE_KEY='haritaBulmacasi_konumAdiCache';
-  function cacheOku(){ try{ return JSON.parse(localStorage.getItem(AD_CACHE_KEY)||'{}'); }catch(e){ return {}; } }
-  function cacheYaz(k,v){ try{ const c=cacheOku(); c[k]=v; localStorage.setItem(AD_CACHE_KEY,JSON.stringify(c)); }catch(e){} }
-  function geocodeUyarisi(status){
-    // Ad cozumlenemezse sebebini hem konsola hem ekrana yaz.
-    let ipucu='';
-    if(status==='REQUEST_DENIED') ipucu='Google Cloud projesinde "Geocoding API" etkin degil ya da API anahtari kisitli.';
-    else if(status==='OVER_QUERY_LIMIT') ipucu='Geocoding kotasi doldu.';
-    else if(status==='ZERO_RESULTS') ipucu='Bu koordinat icin adres bulunamadi (okyanus veya issiz bolge).';
-    else ipucu='Geocoder durumu: '+status;
-    console.warn('[Konum adi] '+ipucu);
-    window.__sonGeocodeHatasi=ipucu;
-  }
-  function geocodeDene(gc,konum,kalan){
+  window.getKonumAdiByKoordinat=function(lat,lng){
     return new Promise(resolve=>{
-      gc.geocode({location:konum},(results,status)=>{
-        if(status==='OK'&&results&&results.length) return resolve(results);
-        if((status==='OVER_QUERY_LIMIT'||status==='UNKNOWN_ERROR')&&kalan>0){
-          return setTimeout(()=>resolve(geocodeDene(gc,konum,kalan-1)),500);
-        }
-        geocodeUyarisi(status);
-        resolve(null);
+      const gc=(typeof geocoder!=='undefined'&&geocoder)?geocoder:(window.google?.maps?.Geocoder?new google.maps.Geocoder():null);
+      if(!gc){resolve({locationName:`${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}`,countryCode:''});return;}
+      gc.geocode({location:{lat:Number(lat),lng:Number(lng)}},(results,status)=>{
+        if(status!=='OK'||!results?.length){resolve({locationName:`${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}`,countryCode:''});return;}
+        const comps=results.flatMap(r=>r.address_components||[]);
+        const find=types=>comps.find(c=>types.some(t=>c.types?.includes(t)));
+        // Once il (administrative_area_level_1), yoksa ilce / sehir bileseni kullanilir.
+        const il=find(['administrative_area_level_1'])||find(['administrative_area_level_2'])||find(['locality','postal_town']);
+        const country=find(['country']);
+        const parcalar=[];
+        if(il?.long_name) parcalar.push(il.long_name);
+        if(country?.long_name && country.long_name!==il?.long_name) parcalar.push(country.long_name);
+        const name=parcalar.join(', ')||country?.long_name||results[0].formatted_address||`${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}`;
+        resolve({locationName:name,countryCode:country?.short_name||''});
       });
     });
-  }
-  window.getKonumAdiByKoordinat=async function(lat,lng){
-    const anahtar=Number(lat).toFixed(4)+','+Number(lng).toFixed(4);
-    const yedek={locationName:anahtar,countryCode:''};
-    const cache=cacheOku();
-    if(cache[anahtar]&&cache[anahtar].locationName&&cache[anahtar].locationName!==anahtar) return cache[anahtar];
-    const gc=(typeof geocoder!=='undefined'&&geocoder)?geocoder:(window.google&&window.google.maps&&window.google.maps.Geocoder?new google.maps.Geocoder():null);
-    if(!gc){ console.warn('[Konum adi] Google Geocoder yuklenmedi.'); return yedek; }
-    const results=await geocodeDene(gc,{lat:Number(lat),lng:Number(lng)},2);
-    if(!results) return yedek;
-    const comps=results.flatMap(r=>r.address_components||[]);
-    const find=types=>comps.find(c=>types.some(t=>c.types&&c.types.includes(t)));
-    // Once il (administrative_area_level_1), yoksa ilce / sehir bileseni kullanilir.
-    const il=find(['administrative_area_level_1'])||find(['administrative_area_level_2'])||find(['locality','postal_town'])||find(['sublocality','natural_feature']);
-    const country=find(['country']);
-    const parcalar=[];
-    if(il&&il.long_name) parcalar.push(il.long_name);
-    if(country&&country.long_name&&country.long_name!==(il&&il.long_name)) parcalar.push(country.long_name);
-    const name=parcalar.join(', ')||(country&&country.long_name)||results[0].formatted_address||anahtar;
-    const sonuc={locationName:name,countryCode:(country&&country.short_name)||''};
-    if(name!==anahtar) cacheYaz(anahtar,sonuc);
-    return sonuc;
   };
   function turEtiketi(text,color){
     const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="20" fill="${color}" stroke="#111827" stroke-width="2"/><text x="23" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="900" fill="white">${text}</text></svg>`;
