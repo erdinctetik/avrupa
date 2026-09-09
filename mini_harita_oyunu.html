@@ -107,7 +107,9 @@
         .result-card { border:1px solid #dbeafe; border-left:6px solid #3b82f6; border-radius:12px; padding:12px; background:#fff; }
         .result-badge { display:inline-flex; align-items:center; border-radius:999px; padding:4px 9px; font-size:12px; font-weight:800; }
         .stat-box { background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:10px; text-align:center; }
-        .player-mode #adminAcButonu, .player-mode #adminModal, .player-mode #bannerSifirlaButonu { display:none !important; }
+        .player-mode #adminModal, .player-mode #bannerSifirlaButonu { display:none !important; }
+        /* Yonetim erisimi yalnizca index yonetim panelinden saglanir; oyun icindeki buton hicbir modda gorunmez. */
+        #adminAcButonu, .hub-head button[onclick="adminPaneliniAc()"], .home-head button[onclick="adminPaneliniAc()"] { display:none !important; }
         #adminAcButonu { position:fixed; right:14px; bottom:14px; z-index:900; border:0; border-radius:999px; padding:10px 14px; background:#111827; color:white; font-weight:700; box-shadow:0 8px 24px rgba(0,0,0,.22); cursor:pointer; }
         #devamBilgisi { max-width:520px; text-align:center; }
         /* Sağ harita: kendi tam ekranı (üstte tahmin kutusu ve Tahmini Gönder butonu görünür kalır) */
@@ -127,8 +129,16 @@
     st.textContent='#adminAcButonu,.hub-head button,.home-head button,button[onclick="adminPaneliniAc()"]{display:none!important}';
     document.head.appendChild(st);
   }
+  // Admin paneli yalnizca oyun oynanmiyorken ve yalnizca ilk aciliste otomatik acilir.
+  window.oyunDevamEdiyorMu=function(){
+    try{ return localStorage.getItem('haritaEkranModu')==='play'; }catch(e){ return false; }
+  };
   window.addEventListener('load',function(){
-    if(mode==='admin'&&typeof window.adminPaneliniAc==='function')setTimeout(()=>window.adminPaneliniAc(),100);
+    if(mode!=='admin')return;
+    if(window.oyunDevamEdiyorMu())return;
+    if(sessionStorage.getItem('haritaAdminPaneliAcildi')==='1')return;
+    sessionStorage.setItem('haritaAdminPaneliAcildi','1');
+    if(typeof window.adminPaneliniAc==='function')setTimeout(()=>window.adminPaneliniAc(),100);
   });
 })();
 </script>
@@ -248,7 +258,7 @@
           <div class="flex gap-2"><input id="adminParola" type="password" inputmode="numeric" class="admin-input" placeholder="Parola"><button onclick="adminGirisYap()" class="px-5 rounded-lg bg-slate-900 text-white font-bold">Giriş</button></div>
           <p id="adminMesaj" class="text-sm mt-2 text-red-600"></p>
         </div>
-        <div id="adminIcerik" class="p-5 hidden"><div class="dinamik-admin-box"><h4>🎮 Oyun Yönetimi</h4><label>Oyun adı</label><input id="yeniOyunAdi" class="admin-input" placeholder="Örn. Eylül Dünya Turu"><label>Üç konum kodu</label><input id="yeniOyunKodlari" class="admin-input" placeholder="Örn. 1, 4, 6"><div class="dinamik-admin-actions"><button onclick="adminYeniOyunAc()">💾 Oyunu Kaydet</button><button class="arsiv-btn" onclick="dinamikAnaMenuyeDon()">🏠 Ana Menü</button></div><p id="oyunYonetimMesaj"></p><div class="archive-title">🎮 Oluşturulan Oyunlar</div><div id="adminOyunListesi" class="archive-list"><p>Oyunlar yükleniyor...</p></div><p class="uid-note">Admin Firebase UID: <code id="adminFirebaseUid">bağlantı bekleniyor</code></p></div>
+        <div id="adminIcerik" class="p-5 hidden"><div class="dinamik-admin-box"><h4>🎮 Oyun Yönetimi</h4><label>Oyun adı</label><input id="yeniOyunAdi" class="admin-input" placeholder="Örn. Eylül Dünya Turu"><label>Üç konum kodu</label><input id="yeniOyunKodlari" class="admin-input" placeholder="Örn. 1, 4, 6"><div id="sansAyarKutusu" style="margin-top:10px;padding:10px 12px;border:2px solid #f59e0b;border-radius:10px;background:#fffbeb"><label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:900;color:#92400e;cursor:pointer;margin:0"><input id="adminSansAktif" type="checkbox" onchange="adminSansAktifDegisti()" checked style="width:18px;height:18px;cursor:pointer"> 🎁 Şans kutuları açık</label><p style="font-size:11px;color:#92400e;margin-top:5px">Kapatırsan bu ayarla kaydedilen/değiştirilen oyunlarda şans kutuları hiç çıkmaz, süre ekleme veya kesintisi olmaz.</p><p id="adminSansAktifMesaj" style="font-size:11px;font-weight:800;margin-top:4px"></p></div><div class="dinamik-admin-actions"><button onclick="adminYeniOyunAc()">💾 Oyunu Kaydet</button><button class="arsiv-btn" onclick="dinamikAnaMenuyeDon()">🏠 Ana Menü</button></div><p id="oyunYonetimMesaj"></p><div class="archive-title">🎮 Oluşturulan Oyunlar</div><div id="adminOyunListesi" class="archive-list"><p>Oyunlar yükleniyor...</p></div><p class="uid-note">Admin Firebase UID: <code id="adminFirebaseUid">bağlantı bekleniyor</code></p></div>
           <div class="mb-4"><label class="block text-sm font-bold mb-1">Firebase Web yapılandırması</label><textarea id="adminFirebaseConfig" class="admin-input" rows="8" spellcheck="false" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","appId":"..."}'></textarea><p class="text-xs text-slate-500 mt-1">Firebase Console’daki web app config nesnesini JSON olarak yapıştır. Anonymous Authentication ve Firestore etkin olmalı.</p></div>
           <div class="mb-4"><label class="block text-sm font-bold mb-1">Google Maps API anahtarı</label><div class="flex gap-2"><input id="adminApiKey" type="password" class="admin-input" placeholder="API anahtarını yapıştırın"><button onclick="adminApiAnahtariKaydet()" class="px-4 rounded-lg bg-indigo-600 text-white font-bold">API anahtarını kaydet</button></div><p class="text-xs text-slate-500 mt-1">Anahtar bu tarayıcıda saklanır. Kaydettikten sonra sayfa yenilenir.</p></div>
           <div class="mb-4"><label class="block text-sm font-bold mb-1">Şans kutuları kalan kaç saniyede açılsın?</label><input id="adminSansSuresi" type="number" min="1" max="119" class="admin-input" value="60"><p class="text-xs text-slate-500 mt-1">Her aşamada bir kez açılır. İlk 5 saniye kronometre durur; sonra kutular açık kalsa bile çalışmaya devam eder.</p></div>
@@ -267,7 +277,7 @@
               <div><label class="block text-xs font-extrabold text-cyan-900 mb-1">Ülke</label><select id="otomatikUlke" class="admin-input" disabled><option value="TR">Türkiye</option><option value="DE">Almanya</option><option value="FR">Fransa</option><option value="IT">İtalya</option><option value="ES">İspanya</option><option value="GB">Birleşik Krallık</option><option value="NL">Hollanda</option><option value="BE">Belçika</option><option value="AT">Avusturya</option><option value="CH">İsviçre</option><option value="PL">Polonya</option><option value="CZ">Çekya</option><option value="HU">Macaristan</option><option value="RO">Romanya</option><option value="GR">Yunanistan</option><option value="PT">Portekiz</option><option value="SE">İsveç</option><option value="NO">Norveç</option><option value="FI">Finlandiya</option><option value="DK">Danimarka</option><option value="US">ABD</option><option value="CA">Kanada</option><option value="AU">Avustralya</option><option value="JP">Japonya</option></select></div>
               <div><label class="block text-xs font-extrabold text-cyan-900 mb-1">Konum türü</label><select id="otomatikTur" class="admin-input"><option value="street">Sadece sokak / yol</option><option value="outdoor">Dış mekân</option></select></div>
               <div class="md:col-span-3"><button id="otomatikKoordinatButonu" onclick="otomatikKoordinatBul()" class="w-full px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-bold">🎲 Otomatik koordinat bul</button><p class="text-xs text-cyan-800 mt-1">Excel referansları kullanılır. Sonuç referanstan 20–150 km uzakta olur. Bir önceki otomatik koordinata uzaklık: <b>Ülke seçiminde en az 250 km</b>, Dünya / Avrupa / Asya / Afrika / Amerika seçiminde <b>en az 900 km</b>.</p></div>
-              <div class="md:col-span-3 p-3 rounded-lg bg-white border border-cyan-300"><label class="flex items-center gap-2 text-sm font-extrabold text-cyan-900 cursor-pointer"><input id="adminSansAktif" type="checkbox" onchange="adminSansAktifDegisti()" checked style="width:18px;height:18px"> 🎁 Şans kutuları açık</label><p class="text-xs text-cyan-800 mt-1">Kapatırsan bu ayarla açılan oyunlarda şans kutuları hiç çıkmaz ve süre eklemesi/kesintisi olmaz.</p><p id="adminSansAktifMesaj" class="text-xs font-bold text-emerald-700 mt-1"></p></div>
+
             </div>
             <button onclick="adminKoordinatlariKaydet()" class="px-4 py-2 rounded-lg bg-emerald-600 text-white font-bold">Kaydet</button>
             <button onclick="oyuncuHtmlIndir()" class="px-4 py-2 rounded-lg bg-violet-600 text-white font-bold">⬇️ Oyuncu HTML’sini indir</button>
@@ -542,7 +552,7 @@
             if (typeof initMap === 'function') {
                 initMap(); 
             } else {
-                window.location.reload(); // Gerekirse sayfayı tamamen yenile
+                oyunuYenidenYukle(); // Gerekirse sayfayı tamamen yenile
             }
         }
 
@@ -1300,7 +1310,7 @@
                 const nextStage = currentStage + 1;
                 localStorage.setItem(STORAGE_KEY_STAGE, nextStage);
                 alert(`🎉 ${nextStage}. Aşama'ya geçiliyor! Yeni harita yükleniyor...`);
-                window.location.reload(); 
+                oyunuYenidenYukle(); 
             } else {
                 localStorage.setItem(STORAGE_KEY_COMPLETED, 'true'); 
 
@@ -1349,6 +1359,11 @@
         });
         window.addEventListener('resize', sagHaritaUstBoslugunuAyarla);
 
+        /* Oyun akisindaki yenilemeler her zaman oyuncu modunda yapilir; boylece yonetim paneli tekrar acilmaz. */
+        function oyunuYenidenYukle(){
+          try{ sessionStorage.setItem('haritaAdminPaneliAcildi','1'); }catch(e){}
+          location.replace(location.pathname+'?mode=player');
+        }
         function adminPaneliniAc(){ document.getElementById('adminModal').classList.remove('hidden'); const p=document.getElementById('adminParola'); p.value=''; p.focus(); }
         function adminPaneliniKapat(){ document.getElementById('adminModal').classList.add('hidden'); document.getElementById('adminParola').value=''; }
         document.addEventListener('DOMContentLoaded',()=>{ const p=document.getElementById('adminParola'); if(p) p.addEventListener('keydown',e=>{ if(e.key==='Enter') adminGirisYap(); }); });
@@ -1733,7 +1748,7 @@
              localStorage.removeItem(STORAGE_KEY_COMPLETED);
              
              // Sayfayı yeniden yükle
-             window.location.reload();
+             oyunuYenidenYukle();
           }
           
     </script>
@@ -1823,14 +1838,14 @@ async function oyunaKatil(id){
  if(ps.exists){if(ps.data().completed){alert('Bu oyunu tamamladın. Yalnızca skor tablosunu görebilirsin.');return;}return oyunaDevamEt(id);}
  await pr.set({uid:firebaseUser.uid,gameId:id,playerName:rumuz,completed:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
  localStorage.setItem('haritaAktifOyunSans', gs.data().chanceEnabled===false?'0':'1');
- oyunuYereldeHazirla(id,gs.data().targets,rumuz,1);location.reload();
+ oyunuYereldeHazirla(id,gs.data().targets,rumuz,1);oyunuYenidenYukle();
 }
 async function oyunaDevamEt(id){
  const gs=await firebaseDb.collection('games').doc(id).get(),ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();
  if(!gs.exists||!ps.exists)return anaSayfayiYukle();if(ps.data().completed)return skorTablosunuAc(id,gs.data().name||id);
  let asama=1;if(Number.isFinite(Number(ps.data().stage1Km)))asama=2;if(Number.isFinite(Number(ps.data().stage2Km)))asama=3;
  localStorage.setItem('haritaAktifOyunSans', gs.data().chanceEnabled===false?'0':'1');
- oyunuYereldeHazirla(id,gs.data().targets,ps.data().playerName||'Oyuncu',asama,false);location.reload();
+ oyunuYereldeHazirla(id,gs.data().targets,ps.data().playerName||'Oyuncu',asama,false);oyunuYenidenYukle();
 }
 function oyunuYereldeHazirla(id,targets,rumuz,asama,temiz=true){
  if(temiz)Object.keys(localStorage).forEach(k=>{if(k.startsWith(id+'_haritaBulmacasi_'))localStorage.removeItem(k);});
@@ -1845,7 +1860,7 @@ async function skorTablosunuAc(id,name){
  x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">✕</button><h2>${temizMetin(name)}</h2><table><tr><th>#</th><th>Oyuncu</th><th>1. Konum</th><th>2. Konum</th><th>3. Konum</th><th>Toplam</th><th>Durum</th></tr>${rows.map((r,i)=>`<tr><td>${r.completed?i+1:'•'}</td><td>${temizMetin(r.playerName)}</td><td>${kmYaz(r.stage1Km)}</td><td>${kmYaz(r.stage2Km)}</td><td>${kmYaz(r.stage3Km)}</td><td><b>${r.completed?kmYaz(r.totalKm):'-'}</b></td><td>${r.completed?'Tamamladı':'Devam ediyor'}</td></tr>`).join('')}</table></div>`;document.body.appendChild(x);
 }
 async function sonucEkraniniAc(id,name){localStorage.setItem('haritaEkranModu','play');oyunEkraniniGoster();try{gosterToplamSonuclari();}catch(e){console.error(e)}await firebaseLiderlikYenile();const b=document.querySelector('.home-btn');if(b){b.onclick=anaSayfayaDon;b.classList.remove('hidden');}}
-function anaSayfayaDon(){localStorage.setItem('haritaEkranModu','home');location.reload();}
+function anaSayfayaDon(){localStorage.setItem('haritaEkranModu','home');oyunuYenidenYukle();}
 function goHome(){anaSayfayaDon();}
 function oyunSonuMenuyeDon(){anaSayfayaDon();}
 function dinamikAnaMenuyeDon(){anaSayfayaDon();}
