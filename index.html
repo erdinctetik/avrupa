@@ -4214,7 +4214,7 @@ if (btoa(girilenSifre) === "MTkxOTIz") {
                 document.getElementById('viewUserSelect').value = "ALL";
                 currentViewingUser = "ALL"; updateSignedUserBar();
                 loadUserPredictions(true);
-            } else { alert("Yanlış şifre!"); }
+            } else { alert("ZORLAMA YAVRUM"); }
         }
         function exitAdminMode() { isAdminMode=false; document.getElementById('adminBanner').style.display='none'; if(currentAuthenticatedUser){currentViewingUser=currentAuthenticatedUser;document.getElementById('viewUserSelect').value=currentAuthenticatedUser;} updateSignedUserBar(); loadUserPredictions(true); }
         function openAdminSettings() {
