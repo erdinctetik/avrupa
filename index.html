@@ -524,7 +524,18 @@
 
 /* Tur tamamlanmadan yeniden baslatmayi kapat */
 #gameStartBtn.tour-active,#gameStartBtn:disabled{background:#94a3b8!important;color:#f8fafc!important;cursor:not-allowed!important;opacity:.9;box-shadow:none!important}
-</style>
+
+/* MOBIL GIRIS DUZELTMESI */
+@media (max-width: 820px) {
+  .start-login { align-items: flex-start !important; overflow-y: auto !important; padding: 10px !important; }
+  .start-login-box { max-height: 92vh !important; overflow-y: auto !important; padding: 18px !important; }
+  .start-login-grid { display: block !important; }
+  .start-auth-pane { order: -1 !important; display: block !important; margin-bottom: 14px !important; }
+  #startUserSelect, #startPassword { display: block !important; width: 100% !important; font-size: 16px !important; }
+  #startRightGamesPane { margin-top: 14px !important; }
+}
+    </style>
+
 
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
