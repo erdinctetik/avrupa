@@ -4288,18 +4288,23 @@ const champ = document.getElementById('realChampionSelect').value;
             rebuildDynamicMatches();
             if(isAdminMode) {
                 const dayMatches = matches.filter(m => m.day === currentDay);
-                const resultPatch={};
-                dayMatches.forEach(match => {
-                    const h = document.getElementById(`home_${match.id}`).value;
-                    const a = document.getElementById(`away_${match.id}`).value;
-                    if(h !== "" && a !== "") {
-                        realResults[match.id]={home:parseInt(h),away:parseInt(a)};
-                        resultPatch[`realResults.${match.id}`]=realResults[match.id];
-                    } else if(h === "" && a === "") {
-                        delete realResults[match.id];
-                        resultPatch[`realResults.${match.id}`]=firebase.firestore.FieldValue.delete();
-                    }
-                });
+userObj.kayitZamanlari = userObj.kayitZamanlari || {};
+const simdi = new Date().toLocaleString('tr-TR');
+
+dayMatches.forEach(match => {
+    if(!isMatchInputOpen(match)) return;
+    const h = document.getElementById(`home_${match.id}`).value;
+    const a = document.getElementById(`away_${match.id}`).value;
+    if(h !== "" && a !== "") {
+        const yeni = { home: parseInt(h), away: parseInt(a) };
+        const eski = userObj[match.id];
+        // Skor ilk kez giriliyorsa veya değiştiyse zamanı güncelle
+        if(!eski || eski.home !== yeni.home || eski.away !== yeni.away) {
+            userObj.kayitZamanlari[match.id] = simdi;
+        }
+        userObj[match.id] = yeni;
+    }
+});
                 db.collection(APP_DATA_COLLECTION).doc(ADMIN_DOC_ID).update(resultPatch)
                 .then(() => { renderTeamCalendarMatrix(); alert("Gerçek maç sonuçları kaydedildi!"); })
                 .catch(err => alert("Hata: " + err));
