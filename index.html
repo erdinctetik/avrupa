@@ -4298,28 +4298,50 @@ const champ = document.getElementById('realChampionSelect').value;
         function savePredictions() {
             rebuildDynamicMatches();
             if(isAdminMode) {
-                const dayMatches = matches.filter(m => m.day === currentDay);
-userObj.kayitZamanlari = userObj.kayitZamanlari || {};
-const simdi = new Date().toLocaleString('tr-TR');
+    const dayMatches = matches.filter(m => m.day === currentDay);
+    const resultPatch = {};
+    const simdi = new Date().toLocaleString('tr-TR');
 
-dayMatches.forEach(match => {
-    if(!isMatchInputOpen(match)) return;
-    const h = document.getElementById(`home_${match.id}`).value;
-    const a = document.getElementById(`away_${match.id}`).value;
-    if(h !== "" && a !== "") {
-        const yeni = { home: parseInt(h), away: parseInt(a) };
-        const eski = userObj[match.id];
-        // Skor ilk kez giriliyorsa veya değiştiyse zamanı güncelle
-        if(!eski || eski.home !== yeni.home || eski.away !== yeni.away) {
-            userObj.kayitZamanlari[match.id] = simdi;
+    dayMatches.forEach(match => {
+        const homeInput = document.getElementById(`home_${match.id}`);
+        const awayInput = document.getElementById(`away_${match.id}`);
+
+        if(!homeInput || !awayInput) return;
+
+        const h = homeInput.value;
+        const a = awayInput.value;
+
+        if(h !== "" && a !== "") {
+            const yeni = {
+                home: parseInt(h, 10),
+                away: parseInt(a, 10),
+                kayitZamani: simdi
+            };
+
+            realResults[match.id] = yeni;
+            resultPatch[`realResults.${match.id}`] = yeni;
         }
-        userObj[match.id] = yeni;
+    });
+
+    if(Object.keys(resultPatch).length === 0) {
+        alert("Kaydedilecek maç skoru bulunamadı.");
+        return;
     }
-});
-                db.collection(APP_DATA_COLLECTION).doc(ADMIN_DOC_ID).update(resultPatch)
-                .then(() => { renderTeamCalendarMatrix(); alert("Gerçek maç sonuçları kaydedildi!"); })
-                .catch(err => alert("Hata: " + err));
-            } else {
+
+    db.collection(APP_DATA_COLLECTION)
+        .doc(ADMIN_DOC_ID)
+        .update(resultPatch)
+        .then(() => {
+            renderTeamCalendarMatrix();
+            alert("Gerçek maç sonuçları kaydedildi!");
+        })
+        .catch(err => {
+            console.error("Maç sonucu kayıt hatası:", err);
+            alert("Hata: " + err.message);
+        });
+
+    return;
+} else {
                 let username = "", password = "", champ = "", secondChamp = "";
                 let viewMode = document.getElementById('viewUserSelect').value;
 
