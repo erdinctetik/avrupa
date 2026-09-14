@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERDİNÇ TETİK katkılarıyla     Harita Bulmacası - Konum · FIX-1409-6</title>
+    <title>ERDİNÇ TETİK katkılarıyla     Harita Bulmacası - Konum · FIX-1409-7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Eski kod ve asama giris ekrani hicbir durumda gosterilmez. */
@@ -2728,6 +2728,34 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  window.__bireyselTahminGonder=window.tahminGonder;window.tahminGonder=hiddenSubmit;
  document.addEventListener('click',e=>{const b=e.target.closest?.('#tahminButonu');if(!b||!isTeam())return;e.preventDefault();e.stopImmediatePropagation();hiddenSubmit().catch(err=>document.getElementById('mesajAlani').textContent='Tahmin kaydedilemedi: '+err.message)},true);
  new MutationObserver(()=>{const m=document.getElementById('takimBeklemeModal');if(m&&!m.classList.contains('hidden'))lobbyListen()}).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});
+})();
+</script>
+
+
+<script id="takimBeklemeKimlikFixV7">
+(function(){
+ const GAME_KEY='haritaBekleyenOyunId', TEAM_KEY='haritaAktifTakimId', NAME_KEY='haritaAktifTakimAdi';
+ let off=null,starting=false;
+ function gameId(){return localStorage.getItem(GAME_KEY)||localStorage.getItem('haritaAktifOyunId')||(typeof aktifOyunId==='function'?aktifOyunId():'')||''}
+ function teamId(){return localStorage.getItem(TEAM_KEY)||''}
+ async function recover(){
+  let gid=gameId(),tid=teamId();
+  if(gid&&tid)return {gid,tid};
+  if(!firebaseUser?.uid)return {gid:'',tid:''};
+  // Ana sayfadaki aktif oyunlardan kullanıcının takım kaydını bul.
+  const games=await firebaseDb.collection('games').where('status','==','active').get();
+  for(const g of games.docs){const ps=await g.ref.collection('players').doc(firebaseUser.uid).get();if(ps.exists&&ps.data().teamId){gid=g.id;tid=ps.data().teamId;localStorage.setItem(GAME_KEY,gid);localStorage.setItem('haritaAktifOyunId',gid);localStorage.setItem(TEAM_KEY,tid);localStorage.setItem(NAME_KEY,ps.data().teamName||'Takım');localStorage.setItem('haritaOyunTuru','team');return {gid,tid}}}
+  return {gid:'',tid:''};
+ }
+ function render(ms){const a=document.getElementById('beklemeUyeler'),b=document.getElementById('beklemeOyunaGir');if(!a||!b)return;a.innerHTML=ms.map(u=>`<div class="bekleme-uye"><div class="bekleme-avatar">${String(u.playerName||'?').trim()[0]?.toUpperCase()||'?'}</div><div><b>${String(u.playerName||'Oyuncu').replace(/[<>&]/g,'')}</b><small>${u.lobbyReady?'Hazır ✓':'Bekleme odasında'}</small></div></div>`).join('')||'<div class="bekleme-bos">Takım oyuncuları yükleniyor...</div>';const me=ms.find(u=>u.uid===firebaseUser.uid),all=ms.length>=2&&ms.every(u=>u.lobbyReady===true);b.disabled=ms.length<2||!!me?.lobbyReady;b.textContent=ms.length<2?'En az 2 oyuncu bekleniyor':me?.lobbyReady?'Diğer oyuncular bekleniyor':'Hazırım';return all}
+ async function launch(gid){if(starting)return;starting=true;const gs=await firebaseDb.collection('games').doc(gid).get();if(!gs.exists){starting=false;throw new Error('Oyun kaydı bulunamadı.')}localStorage.setItem('haritaAktifOyunId',gid);localStorage.removeItem(GAME_KEY);oyunuYereldeHazirla(gid,gs.data().targets,globalOyuncuAdiAl()||'Oyuncu',1);document.getElementById('takimBeklemeModal')?.classList.add('hidden');if(off){off();off=null}oyunuYenidenYukle()}
+ async function listen(){
+  const {gid,tid}=await recover();const msg=document.getElementById('beklemeMesaj');if(!gid||!tid){if(msg)msg.textContent='Takım üyeliği bulunamadı. Takımdan çıkıp yeniden katıl.';return}
+  if(off)off();off=firebaseDb.collection('games').doc(gid).collection('players').where('teamId','==',tid).onSnapshot(ms=>{const list=ms.docs.map(d=>d.data());if(render(list))launch(gid).catch(e=>{starting=false;if(msg)msg.textContent='Oyun başlatılamadı: '+e.message})},e=>{if(msg)msg.textContent='Takım oyuncuları alınamadı: '+e.message});
+ }
+ window.takimdanOyunaBasla=async function(){const msg=document.getElementById('beklemeMesaj');try{const {gid}=await recover();if(!gid){msg.textContent='Takım üyeliği bulunamadı. Takımdan çıkıp yeniden katıl.';return}await firebaseDb.collection('games').doc(gid).collection('players').doc(firebaseUser.uid).set({lobbyReady:true,ready:false,lobbyReadyAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});listen()}catch(e){msg.textContent='Hazır bilgisi kaydedilemedi: '+e.message}};
+ document.addEventListener('click',e=>{const b=e.target.closest?.('#beklemeOyunaGir');if(!b)return;e.preventDefault();e.stopImmediatePropagation();window.takimdanOyunaBasla()},true);
+ new MutationObserver(()=>{const m=document.getElementById('takimBeklemeModal');if(m&&!m.classList.contains('hidden'))listen()}).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});
 })();
 </script>
 
