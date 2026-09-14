@@ -2258,5 +2258,125 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 })();
 </script>
 
+<style id="takimliOyunCss">
+#baslangicKapsayici{display:none!important}
+.takim-modal{position:fixed;inset:0;z-index:70000;background:rgba(15,23,42,.84);display:flex;align-items:center;justify-content:center;padding:16px}
+.takim-modal.hidden{display:none!important}.takim-card{width:min(650px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 25px 80px #0007}
+.takim-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.takim-tabs button,.takim-main-btn{border:0;border-radius:10px;padding:11px;background:#2563eb;color:#fff;font-weight:900;cursor:pointer}.takim-tabs button.passive{background:#e2e8f0;color:#334155}.takim-input{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:10px;padding:11px;margin:6px 0}.takim-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid #cbd5e1;border-radius:12px;padding:12px;margin-top:8px}.takim-item button{border:0;border-radius:8px;padding:8px 12px;background:#16a34a;color:#fff;font-weight:800}.takim-item button:disabled{background:#94a3b8}.takim-rozet{position:absolute;left:50%;transform:translateX(-50%);bottom:58px;z-index:7;background:#0f172a;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;box-shadow:0 4px 14px #0005}.takim-skor{border:1px solid #bfdbfe;border-radius:14px;padding:12px;margin-top:10px;background:#f8fafc}.takim-skor-baslik{display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:900}.takim-asamalar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.takim-asamalar div{background:#fff;border:1px solid #e2e8f0;border-radius:9px;padding:8px;text-align:center;font-size:12px}.takim-sira{font-size:20px}.takim-uyeler{font-size:12px;color:#64748b;margin-top:4px}@media(max-width:600px){.takim-card{padding:14px}.takim-item{align-items:flex-start;flex-direction:column}.takim-item button{width:100%}.takim-asamalar{grid-template-columns:1fr 1fr}.takim-rozet{bottom:50px;max-width:88%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+ .bireysel-btn{background:#0f766e!important;font-size:16px}.takim-ayirici{display:flex;align-items:center;gap:10px;color:#94a3b8;font-size:12px;font-weight:800;margin:10px 0}.takim-ayirici:before,.takim-ayirici:after{content:"";height:1px;background:#cbd5e1;flex:1}
+</style>
+<div id="takimModal" class="takim-modal hidden">
+ <div class="takim-card">
+  <button type="button" onclick="takimPanelKapat()" style="float:right;border:0;background:#e2e8f0;border-radius:8px;padding:7px 10px">✕</button>
+  <h2 style="font-size:24px;font-weight:900;margin:0">👥 Takımlı Oyuna Katıl</h2>
+  <p style="color:#64748b;margin:5px 0">Takım oluştur veya oyuncu sınırı olmadan açık bir takıma katıl.</p>
+  <label style="font-size:12px;font-weight:800">Ad / rumuz</label><input id="takimRumuz" class="takim-input" maxlength="40" placeholder="Adınız veya rumuzunuz">
+  <button id="bireyselGirButonu" class="takim-main-btn bireysel-btn" style="width:100%;margin:12px 0 4px" onclick="bireyselOyunaGir()">👤 Bireysel Gir</button><div class="takim-ayirici"><span>veya takımlı oyna</span></div><div class="takim-tabs"><button id="takimOlusturTab" onclick="takimSekme('olustur')">Takım Oluştur</button><button id="takimGirTab" class="passive" onclick="takimSekme('gir')">Takıma Gir</button></div>
+  <div id="takimOlusturAlan"><input id="yeniTakimAdi" class="takim-input" maxlength="30" placeholder="Takım adı"><button class="takim-main-btn" style="width:100%" onclick="takimOlusturVeGir()">Takımı Kaydet ve Oyuna Gir</button></div>
+  <div id="takimGirAlan" class="hidden"><div id="takimListesi">Takımlar yükleniyor...</div></div>
+  <p id="takimMesaj" style="font-size:13px;font-weight:800;color:#b91c1c;min-height:20px;margin-top:9px"></p>
+ </div>
+</div>
+<script id="takimliOyunSistemi">
+(function(){
+ const TEAM_KEY='haritaAktifTakimId', TEAM_NAME_KEY='haritaAktifTakimAdi';
+ let seciliOyunId='', seciliOyun=null, takimDinleyici=null, takimPinDinleyici=null, takimMarkerlar={};
+ const renkler=['#ef4444','#2563eb','#f59e0b','#8b5cf6','#06b6d4','#ec4899'];
+ function yazi(v){const d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML}
+ function rumuzOku(){return (document.getElementById('takimRumuz')?.value||'').trim()}
+ function basHarf(ad){return String(ad||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase().slice(0,2)||'?'}
+ function renk(uid){let h=0;for(const c of String(uid||''))h=(h*31+c.charCodeAt(0))>>>0;return renkler[h%renkler.length]}
+ function pinIkonu(harf,renkKodu){
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="46" height="54" viewBox="0 0 46 54"><path d="M23 1C11 1 2 10 2 22c0 15 21 31 21 31s21-16 21-31C44 10 35 1 23 1z" fill="${renkKodu}" stroke="#fff" stroke-width="2"/><circle cx="23" cy="22" r="13" fill="#fff" fill-opacity=".2"/><text x="23" y="27" text-anchor="middle" font-family="Arial" font-size="13" font-weight="900" fill="white">${harf}</text></svg>`;
+  return {url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg),scaledSize:new google.maps.Size(46,54),anchor:new google.maps.Point(23,53)};
+ }
+ window.takimPanelKapat=function(){document.getElementById('takimModal').classList.add('hidden')};
+ window.takimSekme=function(t){
+  document.getElementById('takimOlusturAlan').classList.toggle('hidden',t!=='olustur');document.getElementById('takimGirAlan').classList.toggle('hidden',t!=='gir');
+  document.getElementById('takimOlusturTab').classList.toggle('passive',t!=='olustur');document.getElementById('takimGirTab').classList.toggle('passive',t!=='gir');if(t==='gir')takimlariDinle();
+ };
+ async function panelAc(id){
+  seciliOyunId=id;const gs=await firebaseDb.collection('games').doc(id).get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return}seciliOyun=gs.data();
+  document.getElementById('takimRumuz').value=globalOyuncuAdiAl()||'';document.getElementById('yeniTakimAdi').value='';document.getElementById('takimMesaj').textContent='';takimSekme('olustur');document.getElementById('takimModal').classList.remove('hidden');setTimeout(()=>document.getElementById('takimRumuz').focus(),50);
+ }
+ window.oyunaKatil=panelAc;
+ function takimlariDinle(){
+  if(takimDinleyici)takimDinleyici();const alan=document.getElementById('takimListesi');alan.innerHTML='Takımlar yükleniyor...';
+  takimDinleyici=firebaseDb.collection('games').doc(seciliOyunId).collection('teams').onSnapshot(s=>{
+   const teams=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+   alan.innerHTML=teams.length?teams.map(t=>`<div class="takim-item"><div><b>${yazi(t.name)}</b><div style="font-size:12px;color:#64748b">${Number(t.memberCount||0)} oyuncu</div></div><button onclick="takimaGir('${t.id}')">Takıma Gir</button></div>`).join(''):'<p style="color:#64748b">Henüz takım oluşturulmadı.</p>';
+  },e=>alan.innerHTML='<p style="color:#b91c1c">Takımlar alınamadı: '+yazi(e.message)+'</p>');
+ }
+ async function katilimiTamamla(teamId,teamName,rumuz){
+  const gameRef=firebaseDb.collection('games').doc(seciliOyunId),playerRef=gameRef.collection('players').doc(firebaseUser.uid);
+  await playerRef.set({uid:firebaseUser.uid,gameId:seciliOyunId,playerName:rumuz,playMode:'team',teamId,teamName,completed:false,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  localStorage.setItem(GLOBAL_OYUNCU_ADI_KEY,rumuz);localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,teamId);localStorage.setItem(TEAM_NAME_KEY,teamName);localStorage.setItem('haritaAktifOyunSans',seciliOyun.chanceEnabled===false?'0':'1');
+  oyunuYereldeHazirla(seciliOyunId,seciliOyun.targets,rumuz,1);takimPanelKapat();oyunuYenidenYukle();
+ }
+ window.bireyselOyunaGir=async function(){
+  const rumuz=rumuzOku(),m=document.getElementById('takimMesaj');
+  if(rumuz.length<2){m.textContent='Bireysel giriş için en az 2 karakterlik rumuz gir.';return}
+  try{
+   const gameRef=firebaseDb.collection('games').doc(seciliOyunId),playerRef=gameRef.collection('players').doc(firebaseUser.uid);
+   await playerRef.set({uid:firebaseUser.uid,gameId:seciliOyunId,playerName:rumuz,playMode:'individual',teamId:firebase.firestore.FieldValue.delete(),teamName:firebase.firestore.FieldValue.delete(),completed:false,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+   localStorage.setItem(GLOBAL_OYUNCU_ADI_KEY,rumuz);localStorage.removeItem(TEAM_KEY);localStorage.removeItem(TEAM_NAME_KEY);localStorage.setItem('haritaOyunTuru','individual');localStorage.setItem('haritaAktifOyunSans',seciliOyun.chanceEnabled===false?'0':'1');
+   oyunuYereldeHazirla(seciliOyunId,seciliOyun.targets,rumuz,1);takimPanelKapat();oyunuYenidenYukle();
+  }catch(e){m.textContent='Bireysel giriş yapılamadı: '+e.message}
+ };
+ window.takimOlusturVeGir=async function(){
+  const rumuz=rumuzOku(),ad=(document.getElementById('yeniTakimAdi').value||'').trim(),m=document.getElementById('takimMesaj');if(rumuz.length<2||ad.length<2){m.textContent='Rumuz ve takım adı en az 2 karakter olmalı.';return}
+  try{const ref=firebaseDb.collection('games').doc(seciliOyunId).collection('teams').doc();await ref.set({name:ad,memberCount:1,createdBy:firebaseUser.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp()});await katilimiTamamla(ref.id,ad,rumuz)}catch(e){m.textContent='Takım oluşturulamadı: '+e.message}
+ };
+ window.takimaGir=async function(teamId){
+  const rumuz=rumuzOku(),m=document.getElementById('takimMesaj');if(rumuz.length<2){m.textContent='Önce en az 2 karakterlik rumuz gir.';return}
+  const ref=firebaseDb.collection('games').doc(seciliOyunId).collection('teams').doc(teamId);try{let ad='';await firebaseDb.runTransaction(async tx=>{const s=await tx.get(ref);if(!s.exists)throw new Error('Takım bulunamadı.');const n=Number(s.data().memberCount||0);ad=s.data().name||'Takım';tx.update(ref,{memberCount:n+1,updatedAt:firebase.firestore.FieldValue.serverTimestamp()})});await katilimiTamamla(teamId,ad,rumuz)}catch(e){m.textContent=e.message}
+ };
+ const eskiDevam=window.oyunaDevamEt;
+ window.oyunaDevamEt=async function(id){const ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(ps.exists){const p=ps.data();if(p.teamId){localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım')}else{localStorage.setItem('haritaOyunTuru','individual');localStorage.removeItem(TEAM_KEY);localStorage.removeItem(TEAM_NAME_KEY)}}return eskiDevam(id)};
+ async function pinYayinla(lat,lng){
+  const gameId=aktifOyunId(),teamId=localStorage.getItem(TEAM_KEY),stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||0);if(!firebaseHazir||!gameId||!teamId||!stage)return;
+  await firebaseDb.collection('games').doc(gameId).collection('teamPins').doc(firebaseUser.uid).set({uid:firebaseUser.uid,teamId,playerName:globalOyuncuAdiAl()||'Oyuncu',stage,lat:Number(lat),lng:Number(lng),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(console.error);
+ }
+ const eskiPin=window.pinAtVeKoordinatGuncelle;
+ window.pinAtVeKoordinatGuncelle=function(lat,lng){const r=eskiPin.apply(this,arguments);pinYayinla(lat,lng);return r};
+ function pinleriDinle(){
+  if(takimPinDinleyici)takimPinDinleyici();Object.values(takimMarkerlar).forEach(m=>m.setMap(null));takimMarkerlar={};
+  const gameId=aktifOyunId(),teamId=localStorage.getItem(TEAM_KEY);if(!firebaseDb||!gameId||!teamId||!tahminHaritasi)return;
+  takimPinDinleyici=firebaseDb.collection('games').doc(gameId).collection('teamPins').where('teamId','==',teamId).onSnapshot(s=>{
+   const stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||0),gelen=new Set();s.docs.forEach(d=>{const p=d.data();if(Number(p.stage)!==stage||!Number.isFinite(Number(p.lat))||!Number.isFinite(Number(p.lng)))return;gelen.add(d.id);const pos={lat:Number(p.lat),lng:Number(p.lng)},icon=pinIkonu(basHarf(p.playerName),renk(p.uid));if(takimMarkerlar[d.id]){takimMarkerlar[d.id].setPosition(pos);takimMarkerlar[d.id].setIcon(icon)}else takimMarkerlar[d.id]=new google.maps.Marker({position:pos,map:tahminHaritasi,title:p.playerName||'Takım oyuncusu',icon,zIndex:50});});Object.keys(takimMarkerlar).forEach(id=>{if(!gelen.has(id)){takimMarkerlar[id].setMap(null);delete takimMarkerlar[id]}});
+  });
+  const map=document.getElementById('sagHaritaKapsayici');if(map&&!document.getElementById('takimRozet')){const d=document.createElement('div');d.id='takimRozet';d.className='takim-rozet';d.textContent='👥 '+(localStorage.getItem(TEAM_NAME_KEY)||'Takım')+' · takım pinleri canlı';map.appendChild(d)}
+ }
+ const eskiInit=window.initMap;
+ window.initMap=async function(){const r=await eskiInit.apply(this,arguments);setTimeout(pinleriDinle,400);return r};
+ async function takimSkorlari(id){
+  const [ts,ps]=await Promise.all([firebaseDb.collection('games').doc(id).collection('teams').get(),firebaseDb.collection('games').doc(id).collection('players').get()]);
+  const players=ps.docs.map(d=>({id:d.id,...d.data()})),teams=ts.docs.map(d=>({id:d.id,...d.data()}));
+  return teams.map(t=>{const uyeler=players.filter(p=>p.teamId===t.id);const avg=n=>{const a=uyeler.map(p=>Number(p['stage'+n+'Km'])).filter(Number.isFinite);return a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN};const stages=[avg(1),avg(2),avg(3)],total=stages.every(Number.isFinite)?stages.reduce((a,b)=>a+b,0):NaN;return {...t,uyeler,stages,total,completed:uyeler.length>0&&uyeler.every(p=>p.completed)}}).sort((a,b)=>Number(a.total??Infinity)-Number(b.total??Infinity));
+ }
+ function oyuncuDetayHtml(p){
+  const f=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('tr-TR',{maximumFractionDigits:2})+' km':'-';
+  const stages=[1,2,3].map(n=>{const km=Number(p['stage'+n+'Km']),sec=p['stage'+n+'Selection']||'Tahmin yapılmadı',hedef=p['stage'+n+'Target']||('Konum '+n),moves=Number(p['stage'+n+'Moves']||0);return `<div class="takim-oyuncu-asama"><div class="to-baslik">${n}. Konum <b>${f(km)}</b></div><div>🎯 Hedef: <b>${yazi(hedef)}</b></div><div>📍 Seçim: <b>${yazi(sec)}</b></div><div>👣 Hareket: <b>${moves}</b></div></div>`}).join('');
+  const kms=[p.stage1Km,p.stage2Km,p.stage3Km].map(Number).filter(Number.isFinite),enIyi=kms.length?Math.min(...kms):NaN,ort=kms.length?kms.reduce((a,b)=>a+b,0)/kms.length:NaN,total=Number(p.totalKm);
+  return `<div class="takim-oyuncu"><div class="takim-oyuncu-head"><b>${yazi(p.playerName||'Oyuncu')}</b><span>${p.completed?'✅ Tamamladı':kms.length+' / 3 konum'}</span></div><div class="takim-oyuncu-ozet"><span>En iyi: <b>${f(enIyi)}</b></span><span>Ortalama: <b>${f(ort)}</b></span><span>Toplam: <b>${f(total)}</b></span></div><div class="takim-oyuncu-grid">${stages}</div></div>`;
+ }
+ function takimHtml(rows){
+  const f=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('tr-TR',{maximumFractionDigits:2})+' km':'-';
+  return rows.length?rows.map((t,i)=>{
+   const stageCounts=[1,2,3].map(n=>t.uyeler.map(p=>Number(p['stage'+n+'Km'])).filter(Number.isFinite).length);
+   return `<section class="takim-skor"><div class="takim-skor-baslik"><span><span class="takim-sira">${t.completed?(MADALYALAR[i]||(i+1)):'•'}</span> ${yazi(t.name)}</span><span>${t.completed?f(t.total):'Devam ediyor'}</span></div><div class="takim-uyeler">${t.uyeler.length} oyuncu · Takım değerleri, o konumda tahmin yapan oyuncuların ortalamasıdır.</div><div class="takim-asamalar"><div>1. Konum ort.<br><b>${f(t.stages[0])}</b><small>${stageCounts[0]} oyuncu</small></div><div>2. Konum ort.<br><b>${f(t.stages[1])}</b><small>${stageCounts[1]} oyuncu</small></div><div>3. Konum ort.<br><b>${f(t.stages[2])}</b><small>${stageCounts[2]} oyuncu</small></div><div>Takım toplamı<br><b>${f(t.total)}</b><small>3 ortalama toplamı</small></div></div><details class="takim-detay" open><summary>👥 Oyuncu seçimleri ve ayrıntıları</summary>${t.uyeler.map(oyuncuDetayHtml).join('')||'<p>Henüz oyuncu yok.</p>'}</details></section>`
+  }).join(''):'<p>Henüz takım yok.</p>'
+ }
+ const eskiLider=window.firebaseLiderlikYenile;
+ window.firebaseLiderlikYenile=async function(){const alan=document.getElementById('liderlikTablosu'),durum=document.getElementById('liderDurum');if(!alan||!firebaseHazir)return;try{const rows=await takimSkorlari(SERIES_ID);alan.innerHTML=takimHtml(rows);durum.textContent=rows.length+' takım · sonuçlar takım oyuncularının ortalamasıdır'}catch(e){console.error(e);return eskiLider.apply(this,arguments)}};
+ window.skorTablosunuAc=async function(id,name){const rows=await takimSkorlari(id),ps=await firebaseDb.collection('games').doc(id).collection('players').get(),bireyseller=ps.docs.map(d=>d.data()).filter(p=>!p.teamId),x=document.createElement('div');x.className='score-pop';x.onclick=e=>{if(e.target===x)x.remove()};x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">✕</button><h2>🏆 ${yazi(name)} · Takım Sonuçları</h2><p style="color:#64748b">Her konumda iki takım oyuncusunun mesafeleri toplanıp oyuncu sayısına bölünür.</p>${takimHtml(rows)}${bireyseller.length?`<h3 style="margin-top:18px;font-weight:900">👤 Bireysel Oyuncular</h3>${bireyseller.map(oyuncuDetayHtml).join('')}`:''}</div>`;document.body.appendChild(x)};
+ // Sayfa açılışında rumuz isteme; takım seçimi yalnızca Oyuna Gir tıklanınca açılır.
+ window.acilisKarari=async function(){const id=aktifOyunId();if(oyunModu()==='play'&&id){const gs=await firebaseDb.collection('games').doc(id).get(),ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(gs.exists&&ps.exists&&!ps.data().completed){if(ps.data().teamId){localStorage.setItem(TEAM_KEY,ps.data().teamId);localStorage.setItem(TEAM_NAME_KEY,ps.data().teamName||'Takım')}oyunEkraniniGoster();return}if(gs.exists&&ps.exists&&ps.data().completed){sonucEkraniniAc(id,gs.data().name||id);return}}await anaSayfayiYukle()};
+})();
+</script>
+<style id="takimDetayCss">
+.takim-asamalar small{display:block;color:#64748b;margin-top:3px}.takim-detay{margin-top:12px;border-top:1px solid #cbd5e1;padding-top:10px}.takim-detay summary{cursor:pointer;font-weight:900;color:#1e3a8a}.takim-oyuncu{margin-top:10px;border:1px solid #dbeafe;border-radius:12px;padding:10px;background:#fff}.takim-oyuncu-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.takim-oyuncu-head span{font-size:11px;color:#475569}.takim-oyuncu-ozet{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.takim-oyuncu-ozet span{background:#eff6ff;border-radius:8px;padding:5px 8px;font-size:11px}.takim-oyuncu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.takim-oyuncu-asama{border:1px solid #e2e8f0;border-radius:9px;padding:8px;font-size:11px;color:#475569}.to-baslik{display:flex;justify-content:space-between;color:#0f172a;margin-bottom:4px}@media(max-width:650px){.takim-oyuncu-grid{grid-template-columns:1fr}.takim-oyuncu-head{align-items:flex-start;flex-direction:column}.takim-asamalar{grid-template-columns:1fr 1fr}}
+</style>
+
 </body>
 </html>
