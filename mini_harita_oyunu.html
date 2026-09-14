@@ -2399,10 +2399,9 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
    return `<section class="takim-skor"><div class="takim-skor-baslik"><span><span class="takim-sira">${t.completed?(MADALYALAR[i]||(i+1)):'•'}</span> ${yazi(t.name)}</span><span>${t.completed?f(t.total):'Devam ediyor'}</span></div><div class="takim-uyeler">${t.uyeler.length} oyuncu · Takım değerleri, o konumda tahmin yapan oyuncuların ortalamasıdır.</div><div class="takim-asamalar"><div>1. Konum ort.<br><b>${f(t.stages[0])}</b><small>${stageCounts[0]} oyuncu</small></div><div>2. Konum ort.<br><b>${f(t.stages[1])}</b><small>${stageCounts[1]} oyuncu</small></div><div>3. Konum ort.<br><b>${f(t.stages[2])}</b><small>${stageCounts[2]} oyuncu</small></div><div>Takım toplamı<br><b>${f(t.total)}</b><small>3 ortalama toplamı</small></div></div><details class="takim-detay" open><summary>👥 Oyuncu seçimleri ve ayrıntıları</summary>${t.uyeler.map(oyuncuDetayHtml).join('')||'<p>Henüz oyuncu yok.</p>'}</details></section>`
   }).join(''):'<p>Henüz takım yok.</p>'
  }
- const bireyselSkorTablosunuAc=window.skorTablosunuAc;
  window.takimSkorTablosunuAc=async function(id,name){
   const rows=await takimSkorlari(id),x=document.createElement('div');x.className='score-pop';x.onclick=e=>{if(e.target===x)x.remove()};
-  x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">✕</button><h2>🏆 ${yazi(name)} · Takım Skoru</h2><p style="color:#64748b">Takımlar toplam ortalamaya göre sıralanır. Takım ayrıntılarında oyuncuların seçimleri görünür.</p>${takimHtml(rows)}</div>`;
+  x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">✕</button><h2>🏆 ${yazi(name)} · Takım Skoru</h2><p style="color:#64748b">Takımlar, üç konumdaki takım ortalamalarının toplamına göre sıralanır.</p>${takimHtml(rows)}</div>`;
   document.body.appendChild(x);
  };
  const eskiLider=window.firebaseLiderlikYenile;
@@ -2417,33 +2416,27 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 </style>
 
 
-<script id="ayriTakimSkoruButonu">
+<script id="anaSayfaTakimSkoruButonFix">
 (function(){
- async function takimButonlariniEkle(){
+ async function ekle(){
   if(!firebaseHazir||!Array.isArray(oyunListesi))return;
   const cards=[...document.querySelectorAll('#hubGames .game-card')];
   for(let i=0;i<oyunListesi.length&&i<cards.length;i++){
    const g=oyunListesi[i],card=cards[i];
    try{
     const snap=await firebaseDb.collection('games').doc(g.id).collection('players').get();
-    if(!snap.docs.some(d=>!!d.data().teamId))continue;
-    let actions=card.querySelector('.game-score-actions');
-    const existing=[...card.querySelectorAll('button')];
-    if(!actions){actions=document.createElement('div');actions.className='game-score-actions';existing.forEach(b=>actions.appendChild(b));card.appendChild(actions)}
-    if(!actions.querySelector('.takim-skor-ac')){
-     const b=document.createElement('button');b.type='button';b.className='game-action takim-skor-ac';b.textContent='👥 Takım Skoru';b.onclick=()=>takimSkorTablosunuAc(g.id,g.name||g.id).catch(e=>alert('Takım skoru açılamadı: '+e.message));actions.appendChild(b);
-    }
-   }catch(e){console.warn('Takım kontrolü yapılamadı',g.id,e)}
+    if(!snap.docs.some(d=>Boolean(d.data().teamId)))continue;
+    let alan=card.querySelector('.game-score-actions');
+    if(!alan){alan=document.createElement('div');alan.className='game-score-actions';[...card.querySelectorAll(':scope > button')].forEach(b=>alan.appendChild(b));card.appendChild(alan)}
+    if(!alan.querySelector('.takim-skor-ac')){const b=document.createElement('button');b.type='button';b.className='game-action takim-skor-ac';b.textContent='👥 Takım Skoru';b.onclick=()=>takimSkorTablosunuAc(g.id,g.name||g.id).catch(e=>alert('Takım skoru açılamadı: '+e.message));alan.appendChild(b)}
+   }catch(e){console.warn('Takım skoru butonu kontrolü:',g.id,e)}
   }
  }
- const eskiAnaSayfayiYukle=window.anaSayfayiYukle;
- window.anaSayfayiYukle=async function(){const r=await eskiAnaSayfayiYukle.apply(this,arguments);await takimButonlariniEkle();return r};
- if(firebaseHazir)setTimeout(takimButonlariniEkle,300);
+ const asil=window.anaSayfayiYukle;
+ window.anaSayfayiYukle=async function(){const r=await asil.apply(this,arguments);await ekle();return r};
 })();
 </script>
-<style id="ayriTakimSkoruCss">
-.game-score-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.takim-skor-ac{background:#0f766e!important}@media(max-width:650px){.game-score-actions{width:100%}.game-score-actions button{flex:1}}
-</style>
+<style id="anaSayfaTakimSkoruCss">.game-score-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.takim-skor-ac{background:#0f766e!important}@media(max-width:650px){.game-score-actions{width:100%}.game-score-actions button{flex:1}}</style>
 
 </body>
 </html>
