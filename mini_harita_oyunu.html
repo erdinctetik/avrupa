@@ -2407,6 +2407,59 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  window.acilisKarari=async function(){const id=aktifOyunId();if(oyunModu()==='play'&&id){const gs=await firebaseDb.collection('games').doc(id).get(),ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(gs.exists&&ps.exists&&!ps.data().completed){const p=ps.data();if(p.teamId){localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');if(p.ready!==true){seciliOyunId=id;seciliOyun=gs.data();beklemeTeamId=p.teamId;beklemeTeamName=p.teamName||'Takım';beklemeRumuz=p.playerName||'Oyuncu';anaSayfayiGoster();takimBeklemeAc();return}}oyunEkraniniGoster();return}if(gs.exists&&ps.exists&&ps.data().completed){sonucEkraniniAc(id,gs.data().name||id);return}}await anaSayfayiYukle()};
 })();
 </script>
+<script id="takimliGercekKonumGizle">
+/* TAKIMLI OYUN: tahmin gonderildiginde gercek konum hic gosterilmez.
+   Gercek konumlar yalnizca 3. konum bitip sonuc ekrani acildiginda gorunur. */
+(function(){
+ function takimliMi(){
+  return localStorage.getItem('haritaOyunTuru')==='team' && !!localStorage.getItem('haritaAktifTakimId');
+ }
+ function oyunBittiMi(){
+  return localStorage.getItem(STORAGE_KEY_COMPLETED)==='true';
+ }
+ function gizlensinMi(){ return takimliMi() && !oyunBittiMi(); }
+
+ function secimIkonu(stage){
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="20" fill="#ef4444" stroke="#111827" stroke-width="2"/><text x="23" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="900" fill="white">${stage}S</text></svg>`;
+  return {url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg),scaledSize:new google.maps.Size(46,46),anchor:new google.maps.Point(23,23)};
+ }
+
+ const eskiPinGoster=window.gosterPinlerVeHaritayiYakınlaştır;
+ window.gosterPinlerVeHaritayiYakınlaştır=function(tahminEnlem,tahminBoylam,hedefEnlem,hedefBoylam){
+  if(!gizlensinMi()) return eskiPinGoster.apply(this,arguments);
+  if(!tahminHaritasi) return;
+  temizleHaritaKatmanlari();
+  const stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||1);
+  const t={lat:Number(tahminEnlem),lng:Number(tahminBoylam)};
+  tahminMarker=new google.maps.Marker({position:t,map:tahminHaritasi,title:`${stage}. Seçim`,icon:secimIkonu(stage)});
+  tahminHaritasi.panTo(t);
+  if(tahminHaritasi.getZoom()<4) tahminHaritasi.setZoom(4);
+ };
+
+ function mesajiGizle(){
+  if(!gizlensinMi()) return;
+  const m=document.getElementById('mesajAlani');
+  if(!m) return;
+  const stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||1);
+  const secim=localStorage.getItem(`${PREFIX}haritaBulmacasi_stage_${stage}_selectionName`)||'-';
+  m.innerHTML=`📍 Seçimin kaydedildi: <b class="text-red-600">${guvenliMetin(secim)}</b><br><span class="text-slate-500">🔒 Gerçek konum ve mesafe, 3. konum bittikten sonra sonuç ekranında açıklanacak.</span>`;
+ }
+
+ const asilGonder=window.tahminGonder;
+ window.tahminGonder=async function(){
+  const r=await asilGonder.apply(this,arguments);
+  mesajiGizle();
+  return r;
+ };
+
+ const eskiInitMap=window.initMap;
+ window.initMap=async function(){
+  const r=await eskiInitMap.apply(this,arguments);
+  if(localStorage.getItem(STORAGE_KEY_TAHMIN)==='true') setTimeout(mesajiGizle,350);
+  return r;
+ };
+})();
+</script>
 <style id="takimDetayCss">
 .takim-asamalar small{display:block;color:#64748b;margin-top:3px}.takim-detay{margin-top:12px;border-top:1px solid #cbd5e1;padding-top:10px}.takim-detay summary{cursor:pointer;font-weight:900;color:#1e3a8a}.takim-oyuncu{margin-top:10px;border:1px solid #dbeafe;border-radius:12px;padding:10px;background:#fff}.takim-oyuncu-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.takim-oyuncu-head span{font-size:11px;color:#475569}.takim-oyuncu-ozet{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.takim-oyuncu-ozet span{background:#eff6ff;border-radius:8px;padding:5px 8px;font-size:11px}.takim-oyuncu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.takim-oyuncu-asama{border:1px solid #e2e8f0;border-radius:9px;padding:8px;font-size:11px;color:#475569}.to-baslik{display:flex;justify-content:space-between;color:#0f172a;margin-bottom:4px}@media(max-width:650px){.takim-oyuncu-grid{grid-template-columns:1fr}.takim-oyuncu-head{align-items:flex-start;flex-direction:column}.takim-asamalar{grid-template-columns:1fr 1fr}}
 </style>
