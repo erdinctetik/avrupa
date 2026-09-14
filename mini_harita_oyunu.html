@@ -1936,6 +1936,36 @@ async function skorTablosunuAc(id,name){
   </table>${rows.length?'':'<p>Hen\u00fcz kay\u0131tl\u0131 oyuncu yok.</p>'}</div>`;
  document.body.appendChild(x);
 }
+async function bireyselEskiSkorTablosunuAc(id,name){
+ const snap=await firebaseDb.collection('games').doc(id).collection('players').get();
+ const rows=snap.docs.map(d=>d.data()).sort((a,b)=>{if(a.completed&&!b.completed)return-1;if(!a.completed&&b.completed)return 1;return Number(a.totalKm??Infinity)-Number(b.totalKm??Infinity)});
+ const biten=rows.filter(r=>r.completed);
+ const genelOrt=biten.length?biten.reduce((a,b)=>a+Number(b.totalKm||0),0)/biten.length:NaN;
+ const tumKm=rows.flatMap(r=>[r.stage1Km,r.stage2Km,r.stage3Km]).map(Number).filter(Number.isFinite);
+ const enIyiAtis=tumKm.length?Math.min(...tumKm):NaN;
+ const hedefAdlari=[1,2,3].map(n=>rows.map(r=>r['stage'+n+'Target']).find(Boolean)||('Konum '+n));
+ const hucre=(km,secim)=>{
+  const n=Number(km);
+  if(!Number.isFinite(n)) return '<td><span style="color:#94a3b8">-</span></td>';
+  const sv=(typeof mesafeSeviyesi==='function')?mesafeSeviyesi(n):{etiket:'',cls:'',renk:'#64748b'};
+  return `<td><b>${kmYaz(n)}</b><span class="score-rozet ${sv.cls}">${sv.etiket}</span><span class="score-yer">${temizMetin(secim||'-')}</span></td>`;
+ };
+ const x=document.createElement('div');x.className='score-pop';x.onclick=e=>{if(e.target===x)x.remove()};
+ x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">\u2715</button>
+  <h2>${temizMetin(name)}</h2>
+  <div class="score-ozet"><div>\u{1F465} ${rows.length} oyuncu</div><div>\u2705 ${biten.length} tamamlad\u0131</div><div>\u{1F4CA} Ortalama toplam: ${Number.isFinite(genelOrt)?kmYaz(genelOrt):'-'}</div><div>\u{1F3AF} En iyi tek tahmin: ${Number.isFinite(enIyiAtis)?kmYaz(enIyiAtis):'-'}</div></div>
+  <div style="font-size:12px;color:#475569;margin-bottom:8px">\u{1F30D} Konumlar: <b>${hedefAdlari.map(h=>temizMetin(h)).join('</b> \u00b7 <b>')}</b></div>
+  <table><tr><th>#</th><th>Oyuncu</th><th>1. Konum</th><th>2. Konum</th><th>3. Konum</th><th>En iyi</th><th>Ortalama</th><th>Toplam</th><th>Durum</th></tr>
+  ${rows.map((r,i)=>{
+    const kms=[r.stage1Km,r.stage2Km,r.stage3Km].map(Number).filter(Number.isFinite);
+    const enIyi=kms.length?Math.min(...kms):NaN;
+    const ort=kms.length?kms.reduce((a,b)=>a+b,0)/kms.length:NaN;
+    const sira=r.completed?(MADALYALAR[i]||(i+1)):'\u2022';
+    return `<tr><td>${sira}</td><td><b>${temizMetin(r.playerName)}</b></td>${hucre(r.stage1Km,r.stage1Selection)}${hucre(r.stage2Km,r.stage2Selection)}${hucre(r.stage3Km,r.stage3Selection)}<td style="color:#047857;font-weight:800">${Number.isFinite(enIyi)?kmYaz(enIyi):'-'}</td><td>${Number.isFinite(ort)?kmYaz(ort):'-'}</td><td><b style="color:#1d4ed8">${r.completed?kmYaz(r.totalKm):'-'}</b></td><td>${r.completed?'Tamamlad\u0131':(kms.length+' / 3 a\u015fama')}</td></tr>`;
+  }).join('')}
+  </table>${rows.length?'':'<p>Hen\u00fcz kay\u0131tl\u0131 oyuncu yok.</p>'}</div>`;
+ document.body.appendChild(x);
+}
 async function sonucEkraniniAc(id,name){localStorage.setItem('haritaEkranModu','play');oyunEkraniniGoster();try{gosterToplamSonuclari();}catch(e){console.error(e)}await firebaseLiderlikYenile();const b=document.querySelector('.home-btn');if(b){b.onclick=anaSayfayaDon;b.classList.remove('hidden');}}
 function anaSayfayaDon(){localStorage.setItem('haritaEkranModu','home');oyunuYenidenYukle();}
 function goHome(){anaSayfayaDon();}
@@ -2402,7 +2432,11 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  }
  const eskiLider=window.firebaseLiderlikYenile;
  window.firebaseLiderlikYenile=async function(){const alan=document.getElementById('liderlikTablosu'),durum=document.getElementById('liderDurum');if(!alan||!firebaseHazir)return;try{const rows=await takimSkorlari(SERIES_ID);alan.innerHTML=takimHtml(rows);durum.textContent=rows.length+' takım · sonuçlar takım oyuncularının ortalamasıdır'}catch(e){console.error(e);return eskiLider.apply(this,arguments)}};
- window.skorTablosunuAc=async function(id,name){const rows=await takimSkorlari(id),ps=await firebaseDb.collection('games').doc(id).collection('players').get(),bireyseller=ps.docs.map(d=>d.data()).filter(p=>!p.teamId),x=document.createElement('div');x.className='score-pop';x.onclick=e=>{if(e.target===x)x.remove()};x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">✕</button><h2>🏆 ${yazi(name)} · Takım Sonuçları</h2><p style="color:#64748b">Her konumda iki takım oyuncusunun mesafeleri toplanıp oyuncu sayısına bölünür.</p>${takimHtml(rows)}${bireyseller.length?`<h3 style="margin-top:18px;font-weight:900">👤 Bireysel Oyuncular</h3>${bireyseller.map(oyuncuDetayHtml).join('')}`:''}</div>`;document.body.appendChild(x)};
+ window.takimSkorTablosunuAc=async function(id,name){
+  const rows=await takimSkorlari(id),x=document.createElement('div');x.className='score-pop';x.onclick=e=>{if(e.target===x)x.remove()};
+  x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">\u2715</button><h2>\u{1F3C6} ${yazi(name)} \u00b7 Tak\u0131m Skoru</h2><p style="color:#64748b">Tak\u0131mlar, \u00fc\u00e7 konumdaki tak\u0131m ortalamalar\u0131n\u0131n toplam\u0131na g\u00f6re s\u0131ralan\u0131r.</p>${takimHtml(rows)}</div>`;
+  document.body.appendChild(x);
+ };
  // Sayfa açılışında rumuz isteme; takım seçimi yalnızca Oyuna Gir tıklanınca açılır.
  window.acilisKarari=async function(){const id=aktifOyunId();if(oyunModu()==='play'&&id){const gs=await firebaseDb.collection('games').doc(id).get(),ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(gs.exists&&ps.exists&&!ps.data().completed){const p=ps.data();if(p.teamId){localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');if(p.ready!==true){seciliOyunId=id;seciliOyun=gs.data();beklemeTeamId=p.teamId;beklemeTeamName=p.teamName||'Takım';beklemeRumuz=p.playerName||'Oyuncu';anaSayfayiGoster();takimBeklemeAc();return}}oyunEkraniniGoster();return}if(gs.exists&&ps.exists&&ps.data().completed){sonucEkraniniAc(id,gs.data().name||id);return}}await anaSayfayiYukle()};
 })();
@@ -2616,5 +2650,41 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 .takim-asamalar small{display:block;color:#64748b;margin-top:3px}.takim-detay{margin-top:12px;border-top:1px solid #cbd5e1;padding-top:10px}.takim-detay summary{cursor:pointer;font-weight:900;color:#1e3a8a}.takim-oyuncu{margin-top:10px;border:1px solid #dbeafe;border-radius:12px;padding:10px;background:#fff}.takim-oyuncu-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.takim-oyuncu-head span{font-size:11px;color:#475569}.takim-oyuncu-ozet{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.takim-oyuncu-ozet span{background:#eff6ff;border-radius:8px;padding:5px 8px;font-size:11px}.takim-oyuncu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.takim-oyuncu-asama{border:1px solid #e2e8f0;border-radius:9px;padding:8px;font-size:11px;color:#475569}.to-baslik{display:flex;justify-content:space-between;color:#0f172a;margin-bottom:4px}@media(max-width:650px){.takim-oyuncu-grid{grid-template-columns:1fr}.takim-oyuncu-head{align-items:flex-start;flex-direction:column}.takim-asamalar{grid-template-columns:1fr 1fr}}
 </style>
 
+<style id="anaSayfaTakimSkoruCss">.game-score-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.takim-skor-ac{background:#0f766e!important}@media(max-width:650px){.game-score-actions{width:100%}.game-score-actions button{flex:1}}</style>
+<script id="anaSayfaTakimSkoruButonFix">
+(function(){
+ async function ekle(){
+  if(!firebaseHazir||!Array.isArray(oyunListesi))return;
+  const cards=[...document.querySelectorAll('#hubGames .game-card')];
+  for(let i=0;i<oyunListesi.length&&i<cards.length;i++){
+   const g=oyunListesi[i],card=cards[i];
+   try{
+    const snap=await firebaseDb.collection('games').doc(g.id).collection('players').get();
+    if(!snap.docs.some(d=>Boolean(d.data().teamId)))continue;
+    let alan=card.querySelector('.game-score-actions');
+    if(!alan){alan=document.createElement('div');alan.className='game-score-actions';[...card.querySelectorAll(':scope > button')].forEach(b=>alan.appendChild(b));card.appendChild(alan)}
+    if(!alan.querySelector('.takim-skor-ac')){const b=document.createElement('button');b.type='button';b.className='game-action takim-skor-ac';b.textContent='\u{1F465} Tak\u0131m Skoru';b.onclick=()=>takimSkorTablosunuAc(g.id,g.name||g.id).catch(e=>alert('Tak\u0131m skoru a\u00e7\u0131lamad\u0131: '+e.message));alan.appendChild(b)}
+   }catch(e){console.warn('Tak\u0131m skoru butonu kontrol\u00fc:',g.id,e)}
+  }
+ }
+ const asil=window.anaSayfayiYukle;
+ window.anaSayfayiYukle=async function(){const r=await asil.apply(this,arguments);await ekle();return r};
+})();
+</script>
+<script id="anaSayfaEskiSkorKesinYonlendirme">
+(function(){
+ document.addEventListener('click',function(e){
+  const b=e.target.closest&&e.target.closest('.skor-ac');
+  if(!b)return;
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+  bireyselEskiSkorTablosunuAc(b.dataset.gameId,b.dataset.gameName).catch(err=>{
+   console.error(err);
+   alert('Skor tablosu a\u00e7\u0131lamad\u0131: '+(err.message||err));
+  });
+ },true);
+})();
+</script>
 </body>
 </html>
