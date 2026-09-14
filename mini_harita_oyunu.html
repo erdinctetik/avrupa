@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERDİNÇ TETİK katkılarıyla     Harita Bulmacası - Konum</title>
+    <title>ERDİNÇ TETİK katkılarıyla     Harita Bulmacası - Konum · FIX-1409-2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Eski kod ve asama giris ekrani hicbir durumda gosterilmez. */
@@ -2338,7 +2338,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   document.getElementById('takimOlusturTab').classList.toggle('passive',t!=='olustur');document.getElementById('takimGirTab').classList.toggle('passive',t!=='gir');if(t==='gir')takimlariDinle();
  };
  async function panelAc(id){
-  seciliOyunId=id;const gs=await firebaseDb.collection('games').doc(id).get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return}seciliOyun=gs.data();
+  seciliOyunId=id;window.globalOyunIdGuncelle?.();seciliOyunId=id;const gs=await firebaseDb.collection('games').doc(id).get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return}seciliOyun=gs.data();
   document.getElementById('takimRumuz').value=globalOyuncuAdiAl()||'';document.getElementById('yeniTakimAdi').value='';document.getElementById('takimMesaj').textContent='';takimSekme('olustur');document.getElementById('takimModal').classList.remove('hidden');setTimeout(()=>document.getElementById('takimRumuz').focus(),50);
  }
  window.oyunaKatil=panelAc;
