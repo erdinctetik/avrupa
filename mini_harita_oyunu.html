@@ -6,6 +6,9 @@
     <title>ERDİNÇ TETİK katkılarıyla     Harita Bulmacası - Konum</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Eski kod ve asama giris ekrani hicbir durumda gosterilmez. */
+        #baslangicKapsayici { display: none !important; }
+
         /* CSS Kodları */
         html, body {height: 100%; margin: 0; padding: 0; overflow-x: hidden; overflow-y: auto; font-family: 'Inter', sans-serif;}
         .harita-kapsayici {display: flex; width: 95%; height: 71vh; margin: 10px auto; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); border-radius: 12px; overflow: hidden;}
@@ -161,7 +164,7 @@
 </head>
 <body class="bg-gray-50"><div id="hub" class="hub hidden"><div class="hub-card"><div class="hub-head"><div><h1>🎯 Harita Bulmacası</h1><p>Açık oyuna katıl veya geçmiş oyunları incele.</p></div><button onclick="adminPaneliniAc()">⚙️ Yönetim</button></div><div id="hubGames">Yükleniyor...</div></div></div><div id="dinamikAnaMenu" class="dinamik-home hidden"><div class="dinamik-home-card"><div class="home-head"><div><h1>🎯 Harita Bulmacası</h1><p>Açık oyuna katıl veya geçmiş yarışları incele.</p></div><button onclick="adminPaneliniAc()">⚙️ Yönetim</button></div><div id="aktifOyunAlani"></div><div class="archive-title">📚 Geçmiş Oyunlar</div><div id="oyunArsivi" class="archive-list"></div><p id="dinamikMesaj"></p></div></div>
     
-    <div id="baslangicKapsayici" class="flex flex-col items-center justify-center p-8 space-y-4 h-full w-full absolute top-0 left-0 bg-gray-50 z-20">
+    <div id="baslangicKapsayici" class="hidden" hidden aria-hidden="true" style="display:none!important">
         <h2 class="text-3xl font-bold text-gray-800">🎯 Harita Bulmacası  -  ERDİNÇ TETİK Sunar</h2>
         <p class="text-gray-600 text-center">Lütfen oynamak istediğiniz <b>3 konuma</b> ait kodları giriniz.</p>
         
@@ -1622,7 +1625,7 @@
             }
             html=html.replace('<body class="bg-gray-50">','<body class="bg-gray-50 player-mode">');
             html=html.replace(/<div id="adminModal" class="modal-backdrop(?: hidden)?"/, '<div id="adminModal" class="modal-backdrop hidden"');
-            html=html.replace(/<div id="baslangicKapsayici" class="[^"]*"/, '<div id="baslangicKapsayici" class="flex flex-col items-center justify-center p-8 space-y-4 h-full w-full absolute top-0 left-0 bg-gray-50 z-20"');
+            html=html.replace(/<div id="baslangicKapsayici" class="[^"]*"[^>]*/, '<div id="baslangicKapsayici" class="hidden" hidden aria-hidden="true" style="display:none!important"');
             html=html.replace(/<div id="oyunKapsayici" class="[^"]*"/, '<div id="oyunKapsayici" class="h-full w-full hidden"');
 
             const blob=new Blob([html],{type:'text/html;charset=utf-8'});
@@ -1836,7 +1839,6 @@ function globalOyuncuAdiSor(){
  return ad;
 }
 async function acilisKarari(){
- if(!globalOyuncuAdiSor()){anaSayfayiGoster('Oyun panelini açmak için ad veya rumuz girmelisiniz.');return;}
  const id=aktifOyunId();
  if(oyunModu()==='play'&&id){
   const gs=await firebaseDb.collection('games').doc(id).get();
@@ -1878,7 +1880,12 @@ async function anaSayfayiYukle(){
  document.getElementById('hubGames').innerHTML=html+(oyunListesi.length?'':'<p>Henüz oyun yok.</p>');
 }
 async function oyunaKatil(id){
- const rumuz=globalOyuncuAdiAl()||globalOyuncuAdiSor();if(!rumuz)return;
+ const mevcut=globalOyuncuAdiAl();
+ const giris=prompt('Tüm harita oyunlarında kullanılacak adınızı veya rumuzunuzu girin:',mevcut);
+ if(giris===null)return;
+ const rumuz=giris.trim();
+ if(rumuz.length<2){alert('Ad veya rumuz en az 2 karakter olmalı.');return;}
+ localStorage.setItem(GLOBAL_OYUNCU_ADI_KEY,rumuz);
  const ref=firebaseDb.collection('games').doc(id),gs=await ref.get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return;}
  const pr=ref.collection('players').doc(firebaseUser.uid),ps=await pr.get();
  if(ps.exists){if(ps.data().completed){alert('Bu oyunu tamamladın. Yalnızca skor tablosunu görebilirsin.');return;}return oyunaDevamEt(id);}
@@ -2135,6 +2142,121 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 })();
 </script>
 
+
+
+<style id="sonucSayfasiCss">
+  #sonucSayfasi {
+    position: fixed;
+    inset: 0;
+    z-index: 55000;
+    background: linear-gradient(135deg,#eff6ff 0%,#f8fafc 45%,#ecfdf5 100%);
+    overflow-y: auto;
+    padding: 18px;
+  }
+  #sonucSayfasi.hidden { display: none !important; }
+  .sonuc-sayfa-kart {
+    width: min(1100px,100%);
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 22px 60px rgba(15,23,42,.16);
+    overflow: hidden;
+  }
+  .sonuc-sayfa-ust {
+    padding: 22px 24px;
+    color: #fff;
+    background: linear-gradient(135deg,#1d4ed8,#0f766e);
+    text-align: center;
+  }
+  .sonuc-sayfa-ust h1 { margin:0; font-size:clamp(25px,5vw,38px); font-weight:900; }
+  .sonuc-sayfa-ust p { margin:7px 0 0; opacity:.9; }
+  #sonucSayfasiIcerik { padding: 20px; }
+  #sonucSayfasi #sonucTablosuKapsayici {
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    min-height:0 !important;
+    max-height:none !important;
+    height:auto !important;
+    border:0 !important;
+    border-radius:0 !important;
+    overflow:visible !important;
+    background:transparent !important;
+  }
+  #sonucSayfasi #sonucTablosuKapsayici > div {
+    height:auto !important;
+    overflow:visible !important;
+    padding:0 !important;
+  }
+  #sonucSayfasi .grid.grid-cols-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  #sonucSayfasi .lider-panel { overflow-x:auto; }
+  #sonucSayfasi .lider-row { min-width:820px; }
+  #sonucSayfasi .home-btn { margin-top:10px; }
+  @media (max-width: 700px) {
+    #sonucSayfasi { padding:0; background:#f8fafc; }
+    .sonuc-sayfa-kart { border-radius:0; min-height:100%; box-shadow:none; }
+    .sonuc-sayfa-ust { padding:20px 14px; }
+    #sonucSayfasiIcerik { padding:12px; }
+    #sonucSayfasi .grid.grid-cols-3 { grid-template-columns:1fr; }
+    #sonucSayfasi .stat-box { padding:12px; }
+    #sonucSayfasi .lider-row {
+      min-width:0;
+      display:grid;
+      grid-template-columns:34px minmax(120px,1fr) minmax(92px,1fr);
+      gap:6px;
+      font-size:12px;
+    }
+    #sonucSayfasi .lider-row > :nth-child(4),
+    #sonucSayfasi .lider-row > :nth-child(5),
+    #sonucSayfasi .lider-row > :nth-child(6),
+    #sonucSayfasi .lider-row > :nth-child(7) { display:none !important; }
+    #sonucSayfasi .lider-row > :nth-child(8) { display:block !important; }
+    #sonucSayfasi .lider-yer { max-width:100px; }
+    #sonucSayfasi .result-card .grid { grid-template-columns:1fr !important; }
+  }
+</style>
+<div id="sonucSayfasi" class="hidden" aria-live="polite">
+  <div class="sonuc-sayfa-kart">
+    <div class="sonuc-sayfa-ust">
+      <h1>🏆 Oyun Tamamlandı</h1>
+      <p>Üç konumun sonucu ve yarış sıralaması</p>
+    </div>
+    <main id="sonucSayfasiIcerik"></main>
+  </div>
+</div>
+<script id="ayriSonucSayfasiFix">
+(function(){
+  const eskiGosterToplamSonuclari = window.gosterToplamSonuclari;
+  window.gosterToplamSonuclari = function(){
+    if(typeof eskiGosterToplamSonuclari === 'function'){
+      eskiGosterToplamSonuclari.apply(this, arguments);
+    }
+    const sayfa=document.getElementById('sonucSayfasi');
+    const icerik=document.getElementById('sonucSayfasiIcerik');
+    const panel=document.getElementById('sonucTablosuKapsayici');
+    if(!sayfa || !icerik || !panel) return;
+    if(panel.parentElement!==icerik) icerik.appendChild(panel);
+    document.getElementById('hub')?.classList.add('hidden');
+    document.getElementById('dinamikAnaMenu')?.classList.add('hidden');
+    document.getElementById('baslangicKapsayici')?.classList.add('hidden');
+    document.getElementById('oyunKapsayici')?.classList.add('hidden');
+    document.getElementById('sansModal')?.classList.add('hidden');
+    panel.classList.remove('hidden');
+    sayfa.classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    sayfa.scrollTop=0;
+  };
+  const eskiAnaSayfayaDon=window.anaSayfayaDon;
+  window.anaSayfayaDon=function(){
+    document.getElementById('sonucSayfasi')?.classList.add('hidden');
+    document.body.style.overflow='';
+    if(typeof eskiAnaSayfayaDon==='function') return eskiAnaSayfayaDon.apply(this,arguments);
+  };
+  window.goHome=window.anaSayfayaDon;
+  window.oyunSonuMenuyeDon=window.anaSayfayaDon;
+})();
+</script>
 
 </body>
 </html>
