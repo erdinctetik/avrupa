@@ -2564,5 +2564,55 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 })();
 </script>
 
+
+<script id="takimKesinGizlilikVeOrtakBaslangicFix">
+(function(){
+ let ortakBaslangicDinleyici=null;
+ function teamMode(){return localStorage.getItem('haritaOyunTuru')==='team'&&!!localStorage.getItem('haritaAktifTakimId')}
+ function stageSeconds(){const e=document.getElementById('kronometre'),m=(e?.textContent||'').match(/(\d+):(\d+)/);return m?Math.max(0,TIMER_DURATION_SECONDS-(Number(m[1])*60+Number(m[2]))):null}
+ function beklemeDurumuYaz(uyeler){
+  const alan=document.getElementById('beklemeUyeler'),btn=document.getElementById('beklemeOyunaGir');if(!alan||!btn)return;
+  alan.innerHTML=uyeler.map(u=>`<div class="bekleme-uye"><div class="bekleme-avatar" style="background:${renk(u.uid)}">${basHarf(u.playerName)}</div><div><b>${yazi(u.playerName||'Oyuncu')}</b><small>${u.ready?'Hazır ✓':'Hazır değil'}</small></div></div>`).join('');
+  btn.disabled=uyeler.length<2;btn.textContent=uyeler.length<2?'En az 2 oyuncu bekleniyor':'Hazırım';
+ }
+ function ortakBaslangiciDinle(){
+  if(ortakBaslangicDinleyici)ortakBaslangicDinleyici();
+  const q=firebaseDb.collection('games').doc(seciliOyunId).collection('players').where('teamId','==',beklemeTeamId);
+  ortakBaslangicDinleyici=q.onSnapshot(snap=>{
+   const uyeler=snap.docs.map(d=>d.data()).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));beklemeDurumuYaz(uyeler);
+   const basla=uyeler.length>=2&&uyeler.every(u=>u.ready===true);
+   if(basla){
+    if(ortakBaslangicDinleyici){ortakBaslangicDinleyici();ortakBaslangicDinleyici=null}
+    oyunuYereldeHazirla(seciliOyunId,seciliOyun.targets,beklemeRumuz,1);takimBeklemeKapat();oyunuYenidenYukle();
+   }
+  },e=>document.getElementById('beklemeMesaj').textContent='Hazır bilgisi alınamadı: '+e.message);
+ }
+ const eskiBeklemeAc=window.takimBeklemeAc;
+ /* Asıl fonksiyon yerel kapsamda olduğundan modal açılışını gözlemleyerek ortak başlangıç dinleyicisini kur. */
+ new MutationObserver(()=>{const m=document.getElementById('takimBeklemeModal');if(m&&!m.classList.contains('hidden')&&seciliOyunId&&beklemeTeamId)ortakBaslangiciDinle()}).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});
+ window.takimdanOyunaBasla=async function(){
+  const btn=document.getElementById('beklemeOyunaGir'),msg=document.getElementById('beklemeMesaj');btn.disabled=true;msg.textContent='Takım arkadaşların bekleniyor...';
+  try{await firebaseDb.collection('games').doc(seciliOyunId).collection('players').doc(firebaseUser.uid).set({ready:true,readyAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});ortakBaslangiciDinle()}catch(e){msg.textContent='Hazır bilgisi kaydedilemedi: '+e.message;btn.disabled=false}
+ };
+ async function takimTahmininiGizliKaydet(){
+  if(selectedLat===null||selectedLng===null){document.getElementById('mesajAlani').textContent='⚠️ Önce haritadan bir konum seç.';return}
+  const stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||1),base=`${STORAGE_KEY_HEDEF_ISIM_BASE}${stage}`;
+  const hlat=Number(localStorage.getItem(`${base}_hedefEnlem`)),hlng=Number(localStorage.getItem(`${base}_hedefBoylam`));
+  const km=getDistance(hlat,hlng,selectedLat,selectedLng),seconds=stageSeconds();
+  let selectionName='Seçilen konum';try{selectionName=(await getKonumAdiByKoordinat(selectedLat,selectedLng)).locationName||selectionName}catch(e){}
+  localStorage.setItem(STORAGE_KEY_TAHMIN,'true');localStorage.setItem(STORAGE_KEY_KOORDINAT,`${selectedLat.toFixed(6)}, ${selectedLng.toFixed(6)}`);localStorage.setItem(STORAGE_KEY_MESAFE,String(km));localStorage.setItem(STORAGE_KEY_SELECTION_NAME,selectionName);
+  const data={uid:firebaseUser.uid,playerName:globalOyuncuAdiAl()||'Oyuncu',gameId:aktifOyunId(),teamId:localStorage.getItem('haritaAktifTakimId'),teamName:localStorage.getItem('haritaAktifTakimAdi')||'Takım',playMode:'team',ready:true,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  data[`stage${stage}Km`]=km;data[`stage${stage}Selection`]=selectionName;data[`stage${stage}Moves`]=Number(hareketSayaci||0);if(Number.isFinite(seconds))data[`stage${stage}Seconds`]=seconds;
+  if(stage===3){const ref=await firebaseDb.collection('games').doc(aktifOyunId()).collection('players').doc(firebaseUser.uid).get(),old=ref.data()||{};data.totalKm=Number(old.stage1Km||0)+Number(old.stage2Km||0)+km;data.completed=true;data.completedAt=firebase.firestore.FieldValue.serverTimestamp()}else data.completed=false;
+  await firebaseDb.collection('games').doc(aktifOyunId()).collection('players').doc(firebaseUser.uid).set(data,{merge:true});
+  kronometreyiKesinDurdur();temizleHaritaKatmanlari();document.getElementById('tahminButonu')?.classList.add('hidden');document.getElementById('sonrakiAsamaButonu')?.classList.add('hidden');document.getElementById('mesajAlani').textContent='✅ Tahmin kaydedildi. Takım arkadaşların bekleniyor.';
+  takimAsamaBeklemeAc(stage);
+ }
+ /* Capture aşamasında eski tahminGonder hiç çalıştırılmaz. Böylece hedef pin, çizgi, mesafe ve gerçek konum bir kare bile oluşmaz. */
+ document.addEventListener('click',function(e){const b=e.target.closest?.('#tahminButonu');if(!b||!teamMode())return;e.preventDefault();e.stopImmediatePropagation();takimTahmininiGizliKaydet().catch(err=>{console.error(err);document.getElementById('mesajAlani').textContent='Tahmin kaydedilemedi: '+err.message})},true);
+})();
+</script>
+<style id="ortakBaslangicCss">#beklemeOyunaGir:disabled{background:#94a3b8!important;cursor:not-allowed}</style>
+
 </body>
 </html>
