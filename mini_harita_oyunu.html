@@ -2262,8 +2262,9 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 #baslangicKapsayici{display:none!important}
 .takim-modal{position:fixed;inset:0;z-index:70000;background:rgba(15,23,42,.84);display:flex;align-items:center;justify-content:center;padding:16px}
 .takim-modal.hidden{display:none!important}.takim-card{width:min(650px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:20px;box-shadow:0 25px 80px #0007}
-.takim-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.takim-tabs button,.takim-main-btn{border:0;border-radius:10px;padding:11px;background:#2563eb;color:#fff;font-weight:900;cursor:pointer}.takim-tabs button.passive{background:#e2e8f0;color:#334155}.takim-input{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:10px;padding:11px;margin:6px 0}.takim-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid #cbd5e1;border-radius:12px;padding:12px;margin-top:8px}.takim-item button{border:0;border-radius:8px;padding:8px 12px;background:#16a34a;color:#fff;font-weight:800}.takim-item button:disabled{background:#94a3b8}.takim-rozet{position:absolute;left:50%;transform:translateX(-50%);bottom:58px;z-index:7;background:#0f172a;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;box-shadow:0 4px 14px #0005}.takim-skor{border:1px solid #bfdbfe;border-radius:14px;padding:12px;margin-top:10px;background:#f8fafc}.takim-skor-baslik{display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:900}.takim-asamalar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.takim-asamalar div{background:#fff;border:1px solid #e2e8f0;border-radius:9px;padding:8px;text-align:center;font-size:12px}.takim-sira{font-size:20px}.takim-uyeler{font-size:12px;color:#64748b;margin-top:4px}@media(max-width:600px){.takim-card{padding:14px}.takim-item{align-items:flex-start;flex-direction:column}.takim-item button{width:100%}.takim-asamalar{grid-template-columns:1fr 1fr}.takim-rozet{bottom:50px;max-width:88%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+.takim-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.takim-tabs button,.takim-main-btn{border:0;border-radius:10px;padding:11px;background:#2563eb;color:#fff;font-weight:900;cursor:pointer}.takim-tabs button.passive{background:#e2e8f0;color:#334155}.takim-input{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:10px;padding:11px;margin:6px 0}.takim-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid #cbd5e1;border-radius:12px;padding:12px;margin-top:8px}.takim-item button{border:0;border-radius:8px;padding:8px 12px;background:#16a34a;color:#fff;font-weight:800}.takim-item button:disabled{background:#94a3b8}#takimRozet,.takim-rozet{display:none!important}.takim-rozet{position:absolute;left:50%;transform:translateX(-50%);bottom:58px;z-index:7;background:#0f172a;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;box-shadow:0 4px 14px #0005}.takim-skor{border:1px solid #bfdbfe;border-radius:14px;padding:12px;margin-top:10px;background:#f8fafc}.takim-skor-baslik{display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:900}.takim-asamalar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}.takim-asamalar div{background:#fff;border:1px solid #e2e8f0;border-radius:9px;padding:8px;text-align:center;font-size:12px}.takim-sira{font-size:20px}.takim-uyeler{font-size:12px;color:#64748b;margin-top:4px}@media(max-width:600px){.takim-card{padding:14px}.takim-item{align-items:flex-start;flex-direction:column}.takim-item button{width:100%}.takim-asamalar{grid-template-columns:1fr 1fr}.takim-rozet{bottom:50px;max-width:88%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
  .bireysel-btn{background:#0f766e!important;font-size:16px}.takim-ayirici{display:flex;align-items:center;gap:10px;color:#94a3b8;font-size:12px;font-weight:800;margin:10px 0}.takim-ayirici:before,.takim-ayirici:after{content:"";height:1px;background:#cbd5e1;flex:1}
+.bekleme-card{width:min(520px,96vw)}.bekleme-uyeler{display:grid;gap:8px}.bekleme-uye{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #cbd5e1;border-radius:11px;background:#f8fafc}.bekleme-avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900}.bekleme-uye small{display:block;color:#64748b}.bekleme-bos{padding:14px;border:1px dashed #94a3b8;border-radius:11px;color:#64748b;text-align:center}
 </style>
 <div id="takimModal" class="takim-modal hidden">
  <div class="takim-card">
@@ -2272,15 +2273,26 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   <p style="color:#64748b;margin:5px 0">Takım oluştur veya oyuncu sınırı olmadan açık bir takıma katıl.</p>
   <label style="font-size:12px;font-weight:800">Ad / rumuz</label><input id="takimRumuz" class="takim-input" maxlength="40" placeholder="Adınız veya rumuzunuz">
   <button id="bireyselGirButonu" class="takim-main-btn bireysel-btn" style="width:100%;margin:12px 0 4px" onclick="bireyselOyunaGir()">👤 Bireysel Gir</button><div class="takim-ayirici"><span>veya takımlı oyna</span></div><div class="takim-tabs"><button id="takimOlusturTab" onclick="takimSekme('olustur')">Takım Oluştur</button><button id="takimGirTab" class="passive" onclick="takimSekme('gir')">Takıma Gir</button></div>
-  <div id="takimOlusturAlan"><input id="yeniTakimAdi" class="takim-input" maxlength="30" placeholder="Takım adı"><button class="takim-main-btn" style="width:100%" onclick="takimOlusturVeGir()">Takımı Kaydet ve Oyuna Gir</button></div>
+  <div id="takimOlusturAlan"><input id="yeniTakimAdi" class="takim-input" maxlength="30" placeholder="Takım adı"><button class="takim-main-btn" style="width:100%" onclick="takimOlusturVeGir()">Takımı Kaydet ve Bekleme Odasına Gir</button></div>
   <div id="takimGirAlan" class="hidden"><div id="takimListesi">Takımlar yükleniyor...</div></div>
   <p id="takimMesaj" style="font-size:13px;font-weight:800;color:#b91c1c;min-height:20px;margin-top:9px"></p>
+ </div>
+</div>
+<div id="takimBeklemeModal" class="takim-modal hidden">
+ <div class="takim-card bekleme-card">
+  <button type="button" onclick="takimBeklemeKapat()" style="float:right;border:0;background:#e2e8f0;border-radius:8px;padding:7px 10px">✕</button>
+  <h2 style="font-size:24px;font-weight:900;margin:0">⏳ Takım Bekleme Odası</h2>
+  <p id="beklemeTakimAdi" style="color:#1d4ed8;font-size:18px;font-weight:900;margin:8px 0"></p>
+  <p style="color:#64748b;margin:0 0 12px">Takım arkadaşlarının katılması burada anlık gösterilir. Hazır olduğunda oyuna girebilirsin.</p>
+  <div id="beklemeUyeler" class="bekleme-uyeler">Oyuncular yükleniyor...</div>
+  <button id="beklemeOyunaGir" class="takim-main-btn" style="width:100%;margin-top:14px" onclick="takimdanOyunaBasla()">▶️ Oyuna Gir</button>
+  <p id="beklemeMesaj" style="font-size:13px;font-weight:800;color:#b91c1c;min-height:20px;margin-top:9px"></p>
  </div>
 </div>
 <script id="takimliOyunSistemi">
 (function(){
  const TEAM_KEY='haritaAktifTakimId', TEAM_NAME_KEY='haritaAktifTakimAdi';
- let seciliOyunId='', seciliOyun=null, takimDinleyici=null, takimPinDinleyici=null, takimMarkerlar={};
+ let seciliOyunId='', seciliOyun=null, takimDinleyici=null, beklemeDinleyici=null, beklemeTeamId='', beklemeTeamName='', beklemeRumuz='', takimPinDinleyici=null, takimMarkerlar={};
  const renkler=['#ef4444','#2563eb','#f59e0b','#8b5cf6','#06b6d4','#ec4899'];
  function yazi(v){const d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML}
  function rumuzOku(){return (document.getElementById('takimRumuz')?.value||'').trim()}
@@ -2309,10 +2321,31 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  }
  async function katilimiTamamla(teamId,teamName,rumuz){
   const gameRef=firebaseDb.collection('games').doc(seciliOyunId),playerRef=gameRef.collection('players').doc(firebaseUser.uid);
-  await playerRef.set({uid:firebaseUser.uid,gameId:seciliOyunId,playerName:rumuz,playMode:'team',teamId,teamName,completed:false,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  await playerRef.set({uid:firebaseUser.uid,gameId:seciliOyunId,playerName:rumuz,playMode:'team',teamId,teamName,ready:false,completed:false,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
   localStorage.setItem(GLOBAL_OYUNCU_ADI_KEY,rumuz);localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,teamId);localStorage.setItem(TEAM_NAME_KEY,teamName);localStorage.setItem('haritaAktifOyunSans',seciliOyun.chanceEnabled===false?'0':'1');
-  oyunuYereldeHazirla(seciliOyunId,seciliOyun.targets,rumuz,1);takimPanelKapat();oyunuYenidenYukle();
+  beklemeTeamId=teamId;beklemeTeamName=teamName;beklemeRumuz=rumuz;
+  takimPanelKapat();takimBeklemeAc();
  }
+ function takimBeklemeAc(){
+  const modal=document.getElementById('takimBeklemeModal');
+  document.getElementById('beklemeTakimAdi').textContent='👥 '+beklemeTeamName;
+  document.getElementById('beklemeMesaj').textContent='';
+  modal.classList.remove('hidden');
+  if(beklemeDinleyici)beklemeDinleyici();
+  beklemeDinleyici=firebaseDb.collection('games').doc(seciliOyunId).collection('players').where('teamId','==',beklemeTeamId).onSnapshot(snap=>{
+   const uyeler=snap.docs.map(d=>d.data()).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+   const alan=document.getElementById('beklemeUyeler');
+   alan.innerHTML=uyeler.length?uyeler.map(u=>`<div class="bekleme-uye"><div class="bekleme-avatar" style="background:${renk(u.uid)}">${basHarf(u.playerName)}</div><div><b>${yazi(u.playerName||'Oyuncu')}</b><small>${u.ready?'Oyuna giriş yaptı':'Bekleme odasında'}</small></div></div>`).join(''):'<div class="bekleme-bos">Henüz oyuncu görünmüyor.</div>';
+  },e=>document.getElementById('beklemeMesaj').textContent='Takım üyeleri alınamadı: '+e.message);
+ }
+ window.takimBeklemeKapat=function(){document.getElementById('takimBeklemeModal').classList.add('hidden');if(beklemeDinleyici){beklemeDinleyici();beklemeDinleyici=null}};
+ window.takimdanOyunaBasla=async function(){
+  const m=document.getElementById('beklemeMesaj'),b=document.getElementById('beklemeOyunaGir');b.disabled=true;m.textContent='Oyun hazırlanıyor...';
+  try{
+   await firebaseDb.collection('games').doc(seciliOyunId).collection('players').doc(firebaseUser.uid).set({ready:true,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+   oyunuYereldeHazirla(seciliOyunId,seciliOyun.targets,beklemeRumuz,1);takimBeklemeKapat();oyunuYenidenYukle();
+  }catch(e){m.textContent='Oyuna girilemedi: '+e.message;b.disabled=false}
+ };
  window.bireyselOyunaGir=async function(){
   const rumuz=rumuzOku(),m=document.getElementById('takimMesaj');
   if(rumuz.length<2){m.textContent='Bireysel giriş için en az 2 karakterlik rumuz gir.';return}
@@ -2332,7 +2365,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   const ref=firebaseDb.collection('games').doc(seciliOyunId).collection('teams').doc(teamId);try{let ad='';await firebaseDb.runTransaction(async tx=>{const s=await tx.get(ref);if(!s.exists)throw new Error('Takım bulunamadı.');const n=Number(s.data().memberCount||0);ad=s.data().name||'Takım';tx.update(ref,{memberCount:n+1,updatedAt:firebase.firestore.FieldValue.serverTimestamp()})});await katilimiTamamla(teamId,ad,rumuz)}catch(e){m.textContent=e.message}
  };
  const eskiDevam=window.oyunaDevamEt;
- window.oyunaDevamEt=async function(id){const ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(ps.exists){const p=ps.data();if(p.teamId){localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım')}else{localStorage.setItem('haritaOyunTuru','individual');localStorage.removeItem(TEAM_KEY);localStorage.removeItem(TEAM_NAME_KEY)}}return eskiDevam(id)};
+ window.oyunaDevamEt=async function(id){const ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(ps.exists){const p=ps.data();if(p.teamId){localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');if(p.ready!==true){const gs=await firebaseDb.collection('games').doc(id).get();seciliOyunId=id;seciliOyun=gs.data();beklemeTeamId=p.teamId;beklemeTeamName=p.teamName||'Takım';beklemeRumuz=p.playerName||'Oyuncu';takimBeklemeAc();return}}else{localStorage.setItem('haritaOyunTuru','individual');localStorage.removeItem(TEAM_KEY);localStorage.removeItem(TEAM_NAME_KEY)}}return eskiDevam(id)};
  async function pinYayinla(lat,lng){
   const gameId=aktifOyunId(),teamId=localStorage.getItem(TEAM_KEY),stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||0);if(!firebaseHazir||!gameId||!teamId||!stage)return;
   await firebaseDb.collection('games').doc(gameId).collection('teamPins').doc(firebaseUser.uid).set({uid:firebaseUser.uid,teamId,playerName:globalOyuncuAdiAl()||'Oyuncu',stage,lat:Number(lat),lng:Number(lng),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(console.error);
@@ -2345,7 +2378,6 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   takimPinDinleyici=firebaseDb.collection('games').doc(gameId).collection('teamPins').where('teamId','==',teamId).onSnapshot(s=>{
    const stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||0),gelen=new Set();s.docs.forEach(d=>{const p=d.data();if(Number(p.stage)!==stage||!Number.isFinite(Number(p.lat))||!Number.isFinite(Number(p.lng)))return;gelen.add(d.id);const pos={lat:Number(p.lat),lng:Number(p.lng)},icon=pinIkonu(basHarf(p.playerName),renk(p.uid));if(takimMarkerlar[d.id]){takimMarkerlar[d.id].setPosition(pos);takimMarkerlar[d.id].setIcon(icon)}else takimMarkerlar[d.id]=new google.maps.Marker({position:pos,map:tahminHaritasi,title:p.playerName||'Takım oyuncusu',icon,zIndex:50});});Object.keys(takimMarkerlar).forEach(id=>{if(!gelen.has(id)){takimMarkerlar[id].setMap(null);delete takimMarkerlar[id]}});
   });
-  const map=document.getElementById('sagHaritaKapsayici');if(map&&!document.getElementById('takimRozet')){const d=document.createElement('div');d.id='takimRozet';d.className='takim-rozet';d.textContent='👥 '+(localStorage.getItem(TEAM_NAME_KEY)||'Takım')+' · takım pinleri canlı';map.appendChild(d)}
  }
  const eskiInit=window.initMap;
  window.initMap=async function(){const r=await eskiInit.apply(this,arguments);setTimeout(pinleriDinle,400);return r};
@@ -2367,15 +2399,50 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
    return `<section class="takim-skor"><div class="takim-skor-baslik"><span><span class="takim-sira">${t.completed?(MADALYALAR[i]||(i+1)):'•'}</span> ${yazi(t.name)}</span><span>${t.completed?f(t.total):'Devam ediyor'}</span></div><div class="takim-uyeler">${t.uyeler.length} oyuncu · Takım değerleri, o konumda tahmin yapan oyuncuların ortalamasıdır.</div><div class="takim-asamalar"><div>1. Konum ort.<br><b>${f(t.stages[0])}</b><small>${stageCounts[0]} oyuncu</small></div><div>2. Konum ort.<br><b>${f(t.stages[1])}</b><small>${stageCounts[1]} oyuncu</small></div><div>3. Konum ort.<br><b>${f(t.stages[2])}</b><small>${stageCounts[2]} oyuncu</small></div><div>Takım toplamı<br><b>${f(t.total)}</b><small>3 ortalama toplamı</small></div></div><details class="takim-detay" open><summary>👥 Oyuncu seçimleri ve ayrıntıları</summary>${t.uyeler.map(oyuncuDetayHtml).join('')||'<p>Henüz oyuncu yok.</p>'}</details></section>`
   }).join(''):'<p>Henüz takım yok.</p>'
  }
+ const bireyselSkorTablosunuAc=window.skorTablosunuAc;
+ window.takimSkorTablosunuAc=async function(id,name){
+  const rows=await takimSkorlari(id),x=document.createElement('div');x.className='score-pop';x.onclick=e=>{if(e.target===x)x.remove()};
+  x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">✕</button><h2>🏆 ${yazi(name)} · Takım Skoru</h2><p style="color:#64748b">Takımlar toplam ortalamaya göre sıralanır. Takım ayrıntılarında oyuncuların seçimleri görünür.</p>${takimHtml(rows)}</div>`;
+  document.body.appendChild(x);
+ };
  const eskiLider=window.firebaseLiderlikYenile;
  window.firebaseLiderlikYenile=async function(){const alan=document.getElementById('liderlikTablosu'),durum=document.getElementById('liderDurum');if(!alan||!firebaseHazir)return;try{const rows=await takimSkorlari(SERIES_ID);alan.innerHTML=takimHtml(rows);durum.textContent=rows.length+' takım · sonuçlar takım oyuncularının ortalamasıdır'}catch(e){console.error(e);return eskiLider.apply(this,arguments)}};
- window.skorTablosunuAc=async function(id,name){const rows=await takimSkorlari(id),ps=await firebaseDb.collection('games').doc(id).collection('players').get(),bireyseller=ps.docs.map(d=>d.data()).filter(p=>!p.teamId),x=document.createElement('div');x.className='score-pop';x.onclick=e=>{if(e.target===x)x.remove()};x.innerHTML=`<div class="score-box"><button style="float:right" onclick="this.closest('.score-pop').remove()">✕</button><h2>🏆 ${yazi(name)} · Takım Sonuçları</h2><p style="color:#64748b">Her konumda iki takım oyuncusunun mesafeleri toplanıp oyuncu sayısına bölünür.</p>${takimHtml(rows)}${bireyseller.length?`<h3 style="margin-top:18px;font-weight:900">👤 Bireysel Oyuncular</h3>${bireyseller.map(oyuncuDetayHtml).join('')}`:''}</div>`;document.body.appendChild(x)};
+
  // Sayfa açılışında rumuz isteme; takım seçimi yalnızca Oyuna Gir tıklanınca açılır.
- window.acilisKarari=async function(){const id=aktifOyunId();if(oyunModu()==='play'&&id){const gs=await firebaseDb.collection('games').doc(id).get(),ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(gs.exists&&ps.exists&&!ps.data().completed){if(ps.data().teamId){localStorage.setItem(TEAM_KEY,ps.data().teamId);localStorage.setItem(TEAM_NAME_KEY,ps.data().teamName||'Takım')}oyunEkraniniGoster();return}if(gs.exists&&ps.exists&&ps.data().completed){sonucEkraniniAc(id,gs.data().name||id);return}}await anaSayfayiYukle()};
+ window.acilisKarari=async function(){const id=aktifOyunId();if(oyunModu()==='play'&&id){const gs=await firebaseDb.collection('games').doc(id).get(),ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(gs.exists&&ps.exists&&!ps.data().completed){const p=ps.data();if(p.teamId){localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');if(p.ready!==true){seciliOyunId=id;seciliOyun=gs.data();beklemeTeamId=p.teamId;beklemeTeamName=p.teamName||'Takım';beklemeRumuz=p.playerName||'Oyuncu';anaSayfayiGoster();takimBeklemeAc();return}}oyunEkraniniGoster();return}if(gs.exists&&ps.exists&&ps.data().completed){sonucEkraniniAc(id,gs.data().name||id);return}}await anaSayfayiYukle()};
 })();
 </script>
 <style id="takimDetayCss">
 .takim-asamalar small{display:block;color:#64748b;margin-top:3px}.takim-detay{margin-top:12px;border-top:1px solid #cbd5e1;padding-top:10px}.takim-detay summary{cursor:pointer;font-weight:900;color:#1e3a8a}.takim-oyuncu{margin-top:10px;border:1px solid #dbeafe;border-radius:12px;padding:10px;background:#fff}.takim-oyuncu-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.takim-oyuncu-head span{font-size:11px;color:#475569}.takim-oyuncu-ozet{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.takim-oyuncu-ozet span{background:#eff6ff;border-radius:8px;padding:5px 8px;font-size:11px}.takim-oyuncu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.takim-oyuncu-asama{border:1px solid #e2e8f0;border-radius:9px;padding:8px;font-size:11px;color:#475569}.to-baslik{display:flex;justify-content:space-between;color:#0f172a;margin-bottom:4px}@media(max-width:650px){.takim-oyuncu-grid{grid-template-columns:1fr}.takim-oyuncu-head{align-items:flex-start;flex-direction:column}.takim-asamalar{grid-template-columns:1fr 1fr}}
+</style>
+
+
+<script id="ayriTakimSkoruButonu">
+(function(){
+ async function takimButonlariniEkle(){
+  if(!firebaseHazir||!Array.isArray(oyunListesi))return;
+  const cards=[...document.querySelectorAll('#hubGames .game-card')];
+  for(let i=0;i<oyunListesi.length&&i<cards.length;i++){
+   const g=oyunListesi[i],card=cards[i];
+   try{
+    const snap=await firebaseDb.collection('games').doc(g.id).collection('players').get();
+    if(!snap.docs.some(d=>!!d.data().teamId))continue;
+    let actions=card.querySelector('.game-score-actions');
+    const existing=[...card.querySelectorAll('button')];
+    if(!actions){actions=document.createElement('div');actions.className='game-score-actions';existing.forEach(b=>actions.appendChild(b));card.appendChild(actions)}
+    if(!actions.querySelector('.takim-skor-ac')){
+     const b=document.createElement('button');b.type='button';b.className='game-action takim-skor-ac';b.textContent='👥 Takım Skoru';b.onclick=()=>takimSkorTablosunuAc(g.id,g.name||g.id).catch(e=>alert('Takım skoru açılamadı: '+e.message));actions.appendChild(b);
+    }
+   }catch(e){console.warn('Takım kontrolü yapılamadı',g.id,e)}
+  }
+ }
+ const eskiAnaSayfayiYukle=window.anaSayfayiYukle;
+ window.anaSayfayiYukle=async function(){const r=await eskiAnaSayfayiYukle.apply(this,arguments);await takimButonlariniEkle();return r};
+ if(firebaseHazir)setTimeout(takimButonlariniEkle,300);
+})();
+</script>
+<style id="ayriTakimSkoruCss">
+.game-score-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.takim-skor-ac{background:#0f766e!important}@media(max-width:650px){.game-score-actions{width:100%}.game-score-actions button{flex:1}}
 </style>
 
 </body>
