@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERDİNÇ TETİK katkılarıyla     Harita Bulmacası - Konum · FIX-1409-5</title>
+    <title>ERDİNÇ TETİK katkılarıyla     Harita Bulmacası - Konum · FIX-1409-6</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Eski kod ve asama giris ekrani hicbir durumda gosterilmez. */
@@ -1806,7 +1806,7 @@
 let oyunListesi = [];
 function temizMetin(v){const d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML;}
 function kmYaz(v){return Number.isFinite(Number(v))?Number(v).toLocaleString('tr-TR',{maximumFractionDigits:2})+' km':'-';}
-function aktifOyunId(){return localStorage.getItem('haritaAktifOyunId')||'';}
+function aktifOyunId(){return localStorage.getItem('haritaBekleyenOyunId')||localStorage.getItem('haritaAktifOyunId')||'';}
 function oyunModu(){return localStorage.getItem('haritaEkranModu')||'home';}
 
 async function firebaseBaslat(){
@@ -2338,7 +2338,12 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   document.getElementById('takimOlusturTab').classList.toggle('passive',t!=='olustur');document.getElementById('takimGirTab').classList.toggle('passive',t!=='gir');if(t==='gir')takimlariDinle();
  };
  async function panelAc(id){
-  seciliOyunId=id;window.globalOyunIdGuncelle?.();seciliOyunId=id;const gs=await firebaseDb.collection('games').doc(id).get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return}seciliOyun=gs.data();
+  seciliOyunId=id;
+  localStorage.setItem('haritaAktifOyunId',id);
+  localStorage.setItem('haritaBekleyenOyunId',id);
+  window.globalOyunIdGuncelle?.();
+  seciliOyunId=id;
+  const gs=await firebaseDb.collection('games').doc(id).get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return}seciliOyun=gs.data();
   document.getElementById('takimRumuz').value=globalOyuncuAdiAl()||'';document.getElementById('yeniTakimAdi').value='';document.getElementById('takimMesaj').textContent='';takimSekme('olustur');document.getElementById('takimModal').classList.remove('hidden');setTimeout(()=>document.getElementById('takimRumuz').focus(),50);
  }
  window.oyunaKatil=panelAc;
@@ -2589,7 +2594,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
    if(uyeler.length>=2&&uyeler.every(u=>u.ready===true)){
     ortakBaslangicDinleyici();ortakBaslangicDinleyici=null;
     const gs=await firebaseDb.collection('games').doc(gameId).get();if(!gs.exists)return;
-    oyunuYereldeHazirla(gameId,gs.data().targets,globalOyuncuAdiAl()||'Oyuncu',1);document.getElementById('takimBeklemeModal')?.classList.add('hidden');oyunuYenidenYukle();
+    localStorage.setItem('haritaAktifOyunId',gameId);localStorage.removeItem('haritaBekleyenOyunId');oyunuYereldeHazirla(gameId,gs.data().targets,globalOyuncuAdiAl()||'Oyuncu',1);document.getElementById('takimBeklemeModal')?.classList.add('hidden');oyunuYenidenYukle();
    }
   },e=>{const m=document.getElementById('beklemeMesaj');if(m)m.textContent='Hazır bilgisi alınamadı: '+e.message});
  }
@@ -2624,7 +2629,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  const esc=v=>{const d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML};
  const initials=v=>String(v||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase().slice(0,2)||'?';
  const color=uid=>{const a=['#2563eb','#06b6d4','#ef4444','#f59e0b','#8b5cf6','#ec4899'];let h=0;for(const c of String(uid||''))h=(h*31+c.charCodeAt(0))>>>0;return a[h%a.length]};
- function ids(){return {gameId:(typeof aktifOyunId==='function'?aktifOyunId():'')||localStorage.getItem('haritaAktifOyunId')||'',teamId:localStorage.getItem(TEAM_KEY)||''}}
+ function ids(){return {gameId:(typeof aktifOyunId==='function'?aktifOyunId():'')||localStorage.getItem('haritaBekleyenOyunId')||localStorage.getItem('haritaAktifOyunId')||'',teamId:localStorage.getItem(TEAM_KEY)||''}}
  async function start(gameId){
   if(starting)return;starting=true;
   const gs=await firebaseDb.collection('games').doc(gameId).get();
@@ -2662,7 +2667,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 (function(){
  window.takimdanAyrilVeKapat=async function(){
   const modal=document.getElementById('takimBeklemeModal'),msg=document.getElementById('beklemeMesaj');
-  const gameId=(typeof aktifOyunId==='function'?aktifOyunId():'')||localStorage.getItem('haritaAktifOyunId')||'';
+  const gameId=(typeof aktifOyunId==='function'?aktifOyunId():'')||localStorage.getItem('haritaBekleyenOyunId')||localStorage.getItem('haritaAktifOyunId')||'';
   const teamId=localStorage.getItem('haritaAktifTakimId')||'';
   try{
    if(gameId&&firebaseUser?.uid){
@@ -2677,7 +2682,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
     }
     await firebaseDb.collection('games').doc(gameId).collection('teamPins').doc(firebaseUser.uid).delete().catch(()=>{});
    }
-   localStorage.removeItem('haritaAktifTakimId');localStorage.removeItem('haritaAktifTakimAdi');localStorage.removeItem('haritaOyunTuru');
+   localStorage.removeItem('haritaAktifTakimId');localStorage.removeItem('haritaAktifTakimAdi');localStorage.removeItem('haritaOyunTuru');localStorage.removeItem('haritaBekleyenOyunId');
    if(modal)modal.classList.add('hidden');
   }catch(e){if(msg)msg.textContent='Takımdan ayrılma işlemi yapılamadı: '+e.message;else alert('Takımdan ayrılma işlemi yapılamadı: '+e.message)}
  };
@@ -2690,14 +2695,14 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  const TEAM_KEY='haritaAktifTakimId';
  let lobbyUnsub=null,pinUnsub=null,starting=false,pinMarkers={};
  const isTeam=()=>localStorage.getItem('haritaOyunTuru')==='team'&&!!localStorage.getItem(TEAM_KEY);
- const ids=()=>({gameId:(typeof aktifOyunId==='function'?aktifOyunId():'')||localStorage.getItem('haritaAktifOyunId')||'',teamId:localStorage.getItem(TEAM_KEY)||''});
+ const ids=()=>({gameId:(typeof aktifOyunId==='function'?aktifOyunId():'')||localStorage.getItem('haritaBekleyenOyunId')||localStorage.getItem('haritaAktifOyunId')||'',teamId:localStorage.getItem(TEAM_KEY)||''});
  const esc=v=>{const d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML};
  const initials=v=>String(v||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase().slice(0,2)||'?';
  const color=uid=>{const a=['#2563eb','#06b6d4','#ef4444','#f59e0b','#8b5cf6','#ec4899'];let h=0;for(const c of String(uid||''))h=(h*31+c.charCodeAt(0))>>>0;return a[h%a.length]};
  function icon(name,uid){const c=color(uid),t=initials(name),svg=`<svg xmlns="http://www.w3.org/2000/svg" width="46" height="54"><path d="M23 1C11 1 2 10 2 22c0 15 21 31 21 31s21-16 21-31C44 10 35 1 23 1z" fill="${c}" stroke="white" stroke-width="2"/><text x="23" y="27" text-anchor="middle" font-family="Arial" font-size="13" font-weight="900" fill="white">${t}</text></svg>`;return {url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg),scaledSize:new google.maps.Size(46,54),anchor:new google.maps.Point(23,53)}}
  async function launchTogether(gameId){
   if(starting)return;starting=true;const gs=await firebaseDb.collection('games').doc(gameId).get();if(!gs.exists){starting=false;return}
-  oyunuYereldeHazirla(gameId,gs.data().targets,globalOyuncuAdiAl()||'Oyuncu',1);document.getElementById('takimBeklemeModal')?.classList.add('hidden');if(lobbyUnsub){lobbyUnsub();lobbyUnsub=null}oyunuYenidenYukle();
+  localStorage.setItem('haritaAktifOyunId',gameId);localStorage.removeItem('haritaBekleyenOyunId');oyunuYereldeHazirla(gameId,gs.data().targets,globalOyuncuAdiAl()||'Oyuncu',1);document.getElementById('takimBeklemeModal')?.classList.add('hidden');if(lobbyUnsub){lobbyUnsub();lobbyUnsub=null}oyunuYenidenYukle();
  }
  function lobbyListen(){
   const {gameId,teamId}=ids();if(!gameId||!teamId)return;if(lobbyUnsub)lobbyUnsub();
