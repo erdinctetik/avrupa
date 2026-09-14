@@ -2585,16 +2585,6 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
    },e=>{ document.getElementById('tbkAciklama').textContent='Takım bilgisi alınamadı: '+(e.code||e.message); });
  }
 
- window.takimAsamaSenkronBaslat=asamaSenkronBaslat;
- window.takimliOyunModuMu=takimliMi;
-
- // "Sonraki Konum" butonu takimli oyunda dogrudan gecmez, senkron beklemeye girer.
- const asilSonraki=window.sonrakiAsamayaGec;
- window.sonrakiAsamayaGec=function(){
-  if(takimliMi()){ asamaSenkronBaslat(Number(localStorage.getItem(STORAGE_KEY_STAGE)||1)); return; }
-  return asilSonraki.apply(this,arguments);
- };
-
  /* ---------- 3. SONUC EKRANI KILIDI ---------- */
  const asilSonuc=window.gosterToplamSonuclari;
  window.gosterToplamSonuclari=function(){
@@ -2694,110 +2684,6 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
    alert('Skor tablosu a\u00e7\u0131lamad\u0131: '+(err.message||err));
   });
  },true);
-})();
-</script>
-<style id="ortakBaslangicCss">
-#beklemeOyunaGir:disabled{background:#94a3b8!important;cursor:not-allowed}
-.bekleme-uye.hazir{border-color:#22c55e;background:#f0fdf4}
-.bekleme-sayac{margin-top:10px;font-weight:900;color:#1d4ed8;text-align:center}
-</style>
-<script id="takimOrtakBaslangicFix">
-/* TAKIM BEKLEME ODASI: "Oyuna Gir" tek basina oyunu baslatmaz.
-   Takimdaki butun oyuncular hazir olunca oyun herkeste ayni anda acilir. */
-(function(){
- const TEAM_KEY='haritaAktifTakimId', TEAM_NAME_KEY='haritaAktifTakimAdi';
- let hazirDinleyici=null, baslatildi=false;
-
- function esc(v){const d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML}
- function basHarf(v){return String(v||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase().slice(0,2)||'?'}
- function renk(uid){const a=['#ef4444','#2563eb','#f59e0b','#8b5cf6','#06b6d4','#ec4899'];let h=0;for(const c of String(uid||''))h=(h*31+c.charCodeAt(0))>>>0;return a[h%a.length]}
-
- function listeYaz(uyeler){
-  const alan=document.getElementById('beklemeUyeler'), btn=document.getElementById('beklemeOyunaGir'), msg=document.getElementById('beklemeMesaj');
-  if(!alan||!btn) return;
-  const hazirSayisi=uyeler.filter(u=>u.ready===true).length;
-  const ben=uyeler.find(u=>u.uid===firebaseUser.uid);
-  alan.innerHTML=(uyeler.length?uyeler.map(u=>`<div class="bekleme-uye${u.ready?' hazir':''}"><div class="bekleme-avatar" style="background:${renk(u.uid)}">${basHarf(u.playerName)}</div><div><b>${esc(u.playerName||'Oyuncu')}</b><small>${u.ready?'\u2705 Haz\u0131r':'\u23f3 Bekliyor'}</small></div></div>`).join('')
-    :'<div class="bekleme-bos">Hen\u00fcz oyuncu g\u00f6r\u00fcnm\u00fcyor.</div>')
-   +`<div class="bekleme-sayac">Haz\u0131r: ${hazirSayisi} / ${uyeler.length}</div>`;
-  if(ben&&ben.ready===true){
-   btn.disabled=true;
-   btn.textContent='\u2705 Haz\u0131rs\u0131n \u00b7 Tak\u0131m bekleniyor';
-   if(msg) msg.textContent = uyeler.length<2 ? 'Tak\u0131ma en az bir oyuncu daha kat\u0131lmal\u0131.' : 'T\u00fcm tak\u0131m haz\u0131r olunca oyun ayn\u0131 anda ba\u015flayacak.';
-  } else {
-   btn.disabled=uyeler.length<2;
-   btn.textContent=uyeler.length<2?'En az 2 oyuncu bekleniyor':'\u25b6\ufe0f Oyuna Gir';
-   if(msg&&uyeler.length>=2) msg.textContent='';
-  }
- }
-
- async function hepsiHazirBasla(gameId,uyeler){
-  if(baslatildi) return;
-  baslatildi=true;
-  try{
-   const gs=await firebaseDb.collection('games').doc(gameId).get();
-   if(!gs.exists){baslatildi=false;return;}
-   const benim=uyeler.find(u=>u.uid===firebaseUser.uid);
-   localStorage.setItem('haritaOyunTuru','team');
-   localStorage.setItem('haritaAktifOyunSans', gs.data().chanceEnabled===false?'0':'1');
-   oyunuYereldeHazirla(gameId,gs.data().targets,(benim&&benim.playerName)||globalOyuncuAdiAl()||'Oyuncu',1);
-   if(benim&&benim.teamId){localStorage.setItem(TEAM_KEY,benim.teamId);localStorage.setItem(TEAM_NAME_KEY,benim.teamName||'Tak\u0131m');}
-   if(hazirDinleyici){hazirDinleyici();hazirDinleyici=null;}
-   document.getElementById('takimBeklemeModal')?.classList.add('hidden');
-   oyunuYenidenYukle();
-  }catch(e){
-   baslatildi=false;
-   const m=document.getElementById('beklemeMesaj'); if(m) m.textContent='Oyun ba\u015flat\u0131lamad\u0131: '+(e.code||e.message);
-  }
- }
-
- function odayiDinle(){
-  const gameId=aktifOyunId(), teamId=localStorage.getItem(TEAM_KEY);
-  if(!firebaseHazir||!gameId||!teamId) return;
-  if(hazirDinleyici){hazirDinleyici();hazirDinleyici=null;}
-  baslatildi=false;
-  hazirDinleyici=firebaseDb.collection('games').doc(gameId).collection('players').where('teamId','==',teamId)
-   .onSnapshot(snap=>{
-    const uyeler=snap.docs.map(d=>d.data()).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
-    listeYaz(uyeler);
-    if(uyeler.length>=2 && uyeler.every(u=>u.ready===true)) hepsiHazirBasla(gameId,uyeler);
-   },e=>{const m=document.getElementById('beklemeMesaj'); if(m) m.textContent='Tak\u0131m bilgisi al\u0131namad\u0131: '+(e.code||e.message);});
- }
-
- // Bekleme odasi her acildiginda dinleyici baslar.
- new MutationObserver(()=>{
-  const m=document.getElementById('takimBeklemeModal');
-  if(m && !m.classList.contains('hidden') && !hazirDinleyici) odayiDinle();
- }).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});
-
- // "Oyuna Gir" yalnizca hazir isaretler; oyunu baslatmaz.
- window.takimdanOyunaBasla=async function(){
-  const gameId=aktifOyunId(), btn=document.getElementById('beklemeOyunaGir'), msg=document.getElementById('beklemeMesaj');
-  if(!gameId){ if(msg) msg.textContent='Aktif oyun bulunamad\u0131.'; return; }
-  btn.disabled=true;
-  if(msg) msg.textContent='Haz\u0131r i\u015faretlendin. Tak\u0131m arkada\u015flar\u0131n bekleniyor...';
-  try{
-   await firebaseDb.collection('games').doc(gameId).collection('players').doc(firebaseUser.uid)
-    .set({ready:true,readyAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-   odayiDinle();
-  }catch(e){
-   if(msg) msg.textContent='Haz\u0131r bilgisi kaydedilemedi: '+(e.code||e.message);
-   btn.disabled=false;
-  }
- };
-
- // Odadan cikilirsa hazir isareti geri alinir.
- const eskiKapat=window.takimBeklemeKapat;
- window.takimBeklemeKapat=function(){
-  if(hazirDinleyici){hazirDinleyici();hazirDinleyici=null;}
-  const gameId=aktifOyunId();
-  if(firebaseHazir&&firebaseUser&&gameId){
-   firebaseDb.collection('games').doc(gameId).collection('players').doc(firebaseUser.uid)
-    .set({ready:false,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(console.error);
-  }
-  if(typeof eskiKapat==='function') return eskiKapat.apply(this,arguments);
-  document.getElementById('takimBeklemeModal')?.classList.add('hidden');
- };
 })();
 </script>
 </body>
