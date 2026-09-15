@@ -142,8 +142,8 @@
 <style id="dinamikOyunCss">.dinamik-home{position:fixed;inset:0;z-index:800;background:linear-gradient(135deg,#eef2ff,#f0fdf4);overflow:auto;padding:24px}.dinamik-home-card{max-width:900px;margin:auto;background:#fff;border-radius:18px;padding:24px;box-shadow:0 20px 60px #0f172a22}.home-head{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:16px}.home-head h1{font-size:28px;font-weight:900}.home-head button,.dinamik-admin-actions button,.join-btn{border:0;border-radius:10px;padding:11px 16px;background:#4f46e5;color:#fff;font-weight:900;cursor:pointer}.active-game{margin:18px 0;padding:18px;border:2px solid #22c55e;background:#f0fdf4;border-radius:14px}.active-game h2{font-size:22px;font-weight:900;color:#166534}.player-entry{display:flex;gap:8px;margin-top:12px}.player-entry input{flex:1;border:1px solid #86efac;border-radius:9px;padding:11px}.archive-title{font-weight:900;font-size:18px;margin:18px 0 8px}.archive-item{border:1px solid #cbd5e1;border-radius:11px;padding:12px;margin-top:8px;display:flex;justify-content:space-between;gap:10px}.archive-item button{border:0;background:#e0e7ff;color:#3730a3;border-radius:8px;padding:7px 10px;font-weight:800}.dinamik-admin-box{border:2px solid #8b5cf6;background:#f5f3ff;border-radius:14px;padding:14px;margin-bottom:16px}.dinamik-admin-box h4{font-size:20px;font-weight:900}.dinamik-admin-box label{display:block;font-size:12px;font-weight:800;margin:8px 0 4px}.dinamik-admin-actions{display:flex;gap:8px;margin-top:10px}.dinamik-admin-actions .arsiv-btn{background:#334155}.uid-note{font-size:11px;color:#64748b;margin-top:8px}.menu-return{border:0;border-radius:8px;padding:7px 10px;background:#0f766e;color:#fff;font-weight:900;margin-top:5px}.archive-modal{position:fixed;inset:0;z-index:40000;background:#0f172acc;display:flex;align-items:center;justify-content:center;padding:18px}.archive-dialog{width:min(900px,95vw);max-height:85vh;overflow:auto;background:#fff;border-radius:16px;padding:16px}.archive-dialog table{width:100%;border-collapse:collapse}.archive-dialog th,.archive-dialog td{padding:8px;border-bottom:1px solid #e2e8f0;text-align:left}.hidden{display:none!important}@media(max-width:650px){.player-entry{flex-direction:column}.home-head{align-items:flex-start}.archive-item{flex-direction:column}}</style><style>.hub{position:fixed;inset:0;z-index:700;background:linear-gradient(135deg,#eef2ff,#f0fdf4);overflow:auto;padding:24px}.hub-card{max-width:900px;margin:auto;background:white;border-radius:20px;padding:24px;box-shadow:0 20px 60px #0f172a22}.hub-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:15px}.hub-head h1{font-size:28px;font-weight:900}.hub button,.game-admin button,.game-action,.home-btn{border:0;border-radius:9px;padding:10px 14px;background:#4f46e5;color:white;font-weight:900;cursor:pointer}.game-card{margin-top:12px;border:1px solid #cbd5e1;border-radius:13px;padding:14px;display:flex;justify-content:space-between;gap:12px;align-items:center}.game-card.active{border:2px solid #22c55e;background:#f0fdf4}.badge{display:inline-block;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:900}.played{background:#dcfce7;color:#166534}.unplayed{background:#f1f5f9;color:#475569}.progress{background:#fef3c7;color:#92400e}.game-admin{border:2px solid #8b5cf6;background:#f5f3ff;border-radius:13px;padding:14px;margin-bottom:16px}.game-admin input{margin-top:8px}.home-btn{background:#0f766e;margin-left:10px}.score-pop{position:fixed;inset:0;z-index:50000;background:#0f172acc;display:flex;align-items:center;justify-content:center;padding:18px}.score-box{width:min(900px,96vw);max-height:85vh;overflow:auto;background:white;border-radius:16px;padding:16px}.score-box table{width:100%;border-collapse:collapse}.score-box th,.score-box td{padding:8px;border-bottom:1px solid #e2e8f0;text-align:left}@media(max-width:650px){.game-card{align-items:flex-start;flex-direction:column}.hub-head{align-items:flex-start}}</style>
 <script id="surumDamgasi">
 /* SURUM DAMGASI - her yeni surumde asagidaki iki satiri guncelle. */
-window.APP_VERSION='2026-09-14-v12';
-window.APP_VERSION_NOT='Takim: ortak baslangic + asama senkronu + ayri takim skoru + gercek konum kilidi';
+window.APP_VERSION='2026-09-14-v14';
+window.APP_VERSION_NOT='Sure dolunca son pin tahmin sayilir + okunakli siralama + 1000 km ustu tam sayi';
 console.log('%c SURUM: '+window.APP_VERSION+' ','background:#0f766e;color:#fff;font-weight:900;padding:3px 10px;border-radius:5px');
 console.log('Icerik: '+window.APP_VERSION_NOT);
 /* Surum bilgisi yalnizca konsolda gosterilir; ekranda etiket yoktur. */
@@ -402,6 +402,23 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
         const STORAGE_KEY_HAREKET_SAYACI = `${PREFIX}haritaBulmacasi_${GAME_ID}_hareket_sayaci`; 
         const STORAGE_KEY_SANS_ACILDI = `${PREFIX}haritaBulmacasi_${GAME_ID}_sans_acildi`;
         const STORAGE_KEY_TIMER_ADJUST = `${PREFIX}haritaBulmacasi_${GAME_ID}_timer_adjust`;
+        // Tahmin gonderilmeden once haritaya atilan son pin burada saklanir.
+        // Boylece sayfa yenilense bile sure dolunca son pin tahmin olarak kabul edilir.
+        const STORAGE_KEY_SECILI_PIN = `${PREFIX}haritaBulmacasi_${GAME_ID}_seciliPin`;
+        function seciliPiniKaydet(lat,lng){
+          if(Number.isFinite(Number(lat)) && Number.isFinite(Number(lng))){
+            localStorage.setItem(STORAGE_KEY_SECILI_PIN, Number(lat)+','+Number(lng));
+          }
+        }
+        function seciliPiniGeriYukle(){
+          if(selectedLat !== null && selectedLng !== null) return true;
+          const raw = localStorage.getItem(STORAGE_KEY_SECILI_PIN);
+          if(!raw) return false;
+          const p = raw.split(',').map(Number);
+          if(p.length!==2 || !p.every(Number.isFinite)) return false;
+          selectedLat = p[0]; selectedLng = p[1];
+          return true;
+        }
         
         let tahminHaritasi;
         let geocoder;
@@ -725,6 +742,14 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
                 tahminHaritasi.setCenter({ lat: 41, lng: 28 });
                 document.getElementById('tahminButonu').classList.remove('hidden');
                 document.getElementById('tahminButonu').disabled = true; // İlk başta tahmin butonu devre dışı (seçim yapmaya zorlamak için)
+                // Sayfa yenilendiyse daha once atilan pin geri yuklenir.
+                if (seciliPiniGeriYukle()) {
+                    setTimeout(() => {
+                        pinAtVeKoordinatGuncelle(selectedLat, selectedLng);
+                        document.getElementById('tahminButonu').disabled = false;
+                        document.getElementById('mesajAlani').textContent = "Önceki seçimin geri yüklendi. Tahmini Göndermek için butona bas.";
+                    }, 300);
+                }
 
                 const display = document.getElementById('kronometre');
                 timerAdjustmentMs = parseInt(localStorage.getItem(STORAGE_KEY_TIMER_ADJUST) || '0',10);
@@ -923,10 +948,9 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
              const FACTOR = 100;
              const truncatedMesafe = Math.trunc(mesafeKm * FACTOR) / FACTOR; // 2 ondalıkta kes
 
-             formattedMesafe = truncatedMesafe.toLocaleString('tr-TR', { 
-                 minimumFractionDigits: 2, 
-                 maximumFractionDigits: 2 
-             });
+             formattedMesafe = Math.abs(truncatedMesafe) >= 1000
+                 ? Math.round(truncatedMesafe).toLocaleString('tr-TR', { maximumFractionDigits: 0 })
+                 : truncatedMesafe.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
              const hedefIsimKey = `${STORAGE_KEY_HEDEF_ISIM_BASE}${stageNum}_hedefIsim`;
              // 👇 Hedef ismi localStorage'dan çekilir (initMap'te güncellendi)
@@ -1051,7 +1075,11 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
              return {etiket:'Uzak', cls:'bg-red-100 text-red-800', renk:'#ef4444'};
           }
           function kmFormatla(km) {
-             return km.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' km';
+             const n=Number(km);
+             if(!Number.isFinite(n)) return '-';
+             return (Math.abs(n)>=1000
+               ? Math.round(n).toLocaleString('tr-TR',{maximumFractionDigits:0})
+               : n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})) + ' km';
           }
           function gosterToplamSonuclari() {
              localStorage.setItem(STORAGE_KEY_COMPLETED, 'true');
@@ -1103,6 +1131,7 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
              
              selectedLat = lat;
              selectedLng = lng;
+             seciliPiniKaydet(lat, lng);
 
              const tahminKonum = { lat: lat, lng: lng };
              // Tahmin yapılmadan önce sadece basit bir pin gösteriyoruz.
@@ -1239,6 +1268,8 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
                  const sansModal=document.getElementById('sansModal'); if(sansModal) sansModal.classList.add('hidden');
 
                  // SÜRE DOLDU: Haritada işaretli pin varsa ve tahmin gönderilmediyse, son pin tahmin sayılır.
+                 // Pin bellekte yoksa yerel kayıttan geri yüklenir (sayfa yenilenmiş olabilir).
+                 seciliPiniGeriYukle();
                  if (selectedLat !== null && selectedLng !== null && localStorage.getItem(STORAGE_KEY_TAHMIN) !== 'true') {
                      display.textContent = "00:00";
                      display.style.color = "gray";
@@ -1264,7 +1295,7 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
 
                  localStorage.setItem(STORAGE_KEY_TAHMIN, 'true');
                  localStorage.setItem(STORAGE_KEY_MESAFE, '19000');
-                 localStorage.setItem(STORAGE_KEY_SELECTION_NAME, 'Süre Doldu (19000 km)'); 
+                 localStorage.setItem(STORAGE_KEY_SELECTION_NAME, 'Süre Doldu'); 
                  firebaseAsamaKaydet(parseInt(localStorage.getItem(STORAGE_KEY_STAGE)), 19000, 'Süre Doldu', 'Hedef', hareketSayaci);
                  localStorage.removeItem(STORAGE_KEY_TIMER_START);
                  localStorage.removeItem(STORAGE_KEY_TIMER_DURATION);
@@ -1742,7 +1773,7 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
               return Number(a.totalKm??Infinity)-Number(b.totalKm??Infinity);
             });
             let html='<div class="lider-row lider-head"><div>#</div><div>Oyuncu</div><div>1. Konum</div><div>2. Konum</div><div>3. Konum</div><div>En iyi</div><div>Ortalama</div><div>Toplam</div></div>';
-            const f=v=>Number.isFinite(Number(v))?Number(v).toLocaleString('tr-TR',{maximumFractionDigits:2})+' km':'-';
+            const f=v=>Number.isFinite(Number(v))?kmSayi(v)+' km':'-';
             const asamaHucre=(km,secim)=>{
               const n=Number(km); if(!Number.isFinite(n)) return '<div><span class="lider-bos">-</span></div>';
               const sv=mesafeSeviyesi(n);
@@ -1814,7 +1845,15 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
 /* TEMIZ FIREBASE OYUN SISTEMI V1 */
 let oyunListesi = [];
 function temizMetin(v){const d=document.createElement('div');d.textContent=String(v||'');return d.innerHTML;}
-function kmYaz(v){return Number.isFinite(Number(v))?Number(v).toLocaleString('tr-TR',{maximumFractionDigits:2})+' km':'-';}
+/* 1000 km ve uzerinde ondalik basamak gosterilmez; altinda iki basamak gosterilir. */
+function kmSayi(v){
+ const n=Number(v);
+ if(!Number.isFinite(n)) return '-';
+ return Math.abs(n)>=1000
+   ? Math.round(n).toLocaleString('tr-TR',{maximumFractionDigits:0})
+   : n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function kmYaz(v){return Number.isFinite(Number(v))?kmSayi(v)+' km':'-';}
 function aktifOyunId(){return localStorage.getItem('haritaAktifOyunId')||'';}
 function oyunModu(){return localStorage.getItem('haritaEkranModu')||'home';}
 
@@ -1936,13 +1975,22 @@ async function skorTablosunuAc(id,name){
   <h2>${temizMetin(name)}</h2>
   <div class="score-ozet"><div>\u{1F465} ${rows.length} oyuncu</div><div>\u2705 ${biten.length} tamamlad\u0131</div><div>\u{1F4CA} Ortalama toplam: ${Number.isFinite(genelOrt)?kmYaz(genelOrt):'-'}</div><div>\u{1F3AF} En iyi tek tahmin: ${Number.isFinite(enIyiAtis)?kmYaz(enIyiAtis):'-'}</div></div>
   <div style="font-size:12px;color:#475569;margin-bottom:8px">\u{1F30D} Konumlar: <b>${hedefAdlari.map(h=>temizMetin(h)).join('</b> \u00b7 <b>')}</b></div>
-  <table><tr><th>#</th><th>Oyuncu</th><th>1. Konum</th><th>2. Konum</th><th>3. Konum</th><th>En iyi</th><th>Ortalama</th><th>Toplam</th><th>Durum</th></tr>
+  <table><tr><th>S\u0131ra</th><th>Oyuncu</th><th>1. Konum</th><th>2. Konum</th><th>3. Konum</th><th>En iyi</th><th>Ortalama</th><th>Toplam</th><th>Durum</th></tr>
   ${rows.map((r,i)=>{
     const kms=[r.stage1Km,r.stage2Km,r.stage3Km].map(Number).filter(Number.isFinite);
     const enIyi=kms.length?Math.min(...kms):NaN;
     const ort=kms.length?kms.reduce((a,b)=>a+b,0)/kms.length:NaN;
-    const sira=r.completed?(MADALYALAR[i]||(i+1)):'\u2022';
-    return `<tr><td>${sira}</td><td><b>${temizMetin(r.playerName)}</b></td>${hucre(r.stage1Km,r.stage1Selection,r.stage1Seconds,r.stage1Moves)}${hucre(r.stage2Km,r.stage2Selection,r.stage2Seconds,r.stage2Moves)}${hucre(r.stage3Km,r.stage3Selection,r.stage3Seconds,r.stage3Moves)}<td style="color:#047857;font-weight:800">${Number.isFinite(enIyi)?kmYaz(enIyi):'-'}</td><td>${Number.isFinite(ort)?kmYaz(ort):'-'}</td><td><b style="color:#1d4ed8">${r.completed?kmYaz(r.totalKm):'-'}</b></td><td>${r.completed?'Tamamlad\u0131':(kms.length+' / 3 a\u015fama')}</td></tr>`;
+    const derece=i+1;
+    const siraSinifi = !r.completed ? 'sira-bekliyor' : (derece<=3 ? 'sira-'+derece : 'sira-normal');
+    const satirSinifi = !r.completed ? 'satir-devam' : (derece<=3 ? 'satir-'+derece : '');
+    const siraIc = r.completed
+      ? (derece<=3
+          ? `<span class="sira-mad">${MADALYALAR[i]}</span><span class="sira-no">${derece}.</span>`
+          : `<span class="sira-no">${derece}.</span>`)
+      : '\u2022';
+    const sira = `<span class="sira-rozet ${siraSinifi}">${siraIc}</span>`;
+    const durumMetni = r.completed ? 'Tamamlad\u0131' : (kms.length+' / 3 a\u015fama');
+    return `<tr class="${satirSinifi}"><td>${sira}</td><td><div class="oyuncu-ad"><b>${temizMetin(r.playerName)}</b><span class="oyuncu-durum ${r.completed?'bitti':''}">${durumMetni}</span></div></td>${hucre(r.stage1Km,r.stage1Selection,r.stage1Seconds,r.stage1Moves)}${hucre(r.stage2Km,r.stage2Selection,r.stage2Seconds,r.stage2Moves)}${hucre(r.stage3Km,r.stage3Selection,r.stage3Seconds,r.stage3Moves)}<td style="color:#047857;font-weight:800">${Number.isFinite(enIyi)?kmYaz(enIyi):'-'}</td><td>${Number.isFinite(ort)?kmYaz(ort):'-'}</td><td><b style="color:#1d4ed8">${r.completed?kmYaz(r.totalKm):'-'}</b></td><td>${r.completed?'Tamamlad\u0131':(kms.length+' / 3 a\u015fama')}</td></tr>`;
   }).join('')}
   </table>${rows.length?'':'<p>Hen\u00fcz kay\u0131tl\u0131 oyuncu yok.</p>'}</div>`;
  document.body.appendChild(x);
@@ -1968,13 +2016,22 @@ async function bireyselEskiSkorTablosunuAc(id,name){
   <h2>${temizMetin(name)}</h2>
   <div class="score-ozet"><div>\u{1F465} ${rows.length} oyuncu</div><div>\u2705 ${biten.length} tamamlad\u0131</div><div>\u{1F4CA} Ortalama toplam: ${Number.isFinite(genelOrt)?kmYaz(genelOrt):'-'}</div><div>\u{1F3AF} En iyi tek tahmin: ${Number.isFinite(enIyiAtis)?kmYaz(enIyiAtis):'-'}</div></div>
   <div style="font-size:12px;color:#475569;margin-bottom:8px">\u{1F30D} Konumlar: <b>${hedefAdlari.map(h=>temizMetin(h)).join('</b> \u00b7 <b>')}</b></div>
-  <table><tr><th>#</th><th>Oyuncu</th><th>1. Konum</th><th>2. Konum</th><th>3. Konum</th><th>En iyi</th><th>Ortalama</th><th>Toplam</th><th>Durum</th></tr>
+  <table><tr><th>S\u0131ra</th><th>Oyuncu</th><th>1. Konum</th><th>2. Konum</th><th>3. Konum</th><th>En iyi</th><th>Ortalama</th><th>Toplam</th><th>Durum</th></tr>
   ${rows.map((r,i)=>{
     const kms=[r.stage1Km,r.stage2Km,r.stage3Km].map(Number).filter(Number.isFinite);
     const enIyi=kms.length?Math.min(...kms):NaN;
     const ort=kms.length?kms.reduce((a,b)=>a+b,0)/kms.length:NaN;
-    const sira=r.completed?(MADALYALAR[i]||(i+1)):'\u2022';
-    return `<tr><td>${sira}</td><td><b>${temizMetin(r.playerName)}</b></td>${hucre(r.stage1Km,r.stage1Selection,r.stage1Seconds,r.stage1Moves)}${hucre(r.stage2Km,r.stage2Selection,r.stage2Seconds,r.stage2Moves)}${hucre(r.stage3Km,r.stage3Selection,r.stage3Seconds,r.stage3Moves)}<td style="color:#047857;font-weight:800">${Number.isFinite(enIyi)?kmYaz(enIyi):'-'}</td><td>${Number.isFinite(ort)?kmYaz(ort):'-'}</td><td><b style="color:#1d4ed8">${r.completed?kmYaz(r.totalKm):'-'}</b></td><td>${r.completed?'Tamamlad\u0131':(kms.length+' / 3 a\u015fama')}</td></tr>`;
+    const derece=i+1;
+    const siraSinifi = !r.completed ? 'sira-bekliyor' : (derece<=3 ? 'sira-'+derece : 'sira-normal');
+    const satirSinifi = !r.completed ? 'satir-devam' : (derece<=3 ? 'satir-'+derece : '');
+    const siraIc = r.completed
+      ? (derece<=3
+          ? `<span class="sira-mad">${MADALYALAR[i]}</span><span class="sira-no">${derece}.</span>`
+          : `<span class="sira-no">${derece}.</span>`)
+      : '\u2022';
+    const sira = `<span class="sira-rozet ${siraSinifi}">${siraIc}</span>`;
+    const durumMetni = r.completed ? 'Tamamlad\u0131' : (kms.length+' / 3 a\u015fama');
+    return `<tr class="${satirSinifi}"><td>${sira}</td><td><div class="oyuncu-ad"><b>${temizMetin(r.playerName)}</b><span class="oyuncu-durum ${r.completed?'bitti':''}">${durumMetni}</span></div></td>${hucre(r.stage1Km,r.stage1Selection,r.stage1Seconds,r.stage1Moves)}${hucre(r.stage2Km,r.stage2Selection,r.stage2Seconds,r.stage2Moves)}${hucre(r.stage3Km,r.stage3Selection,r.stage3Seconds,r.stage3Moves)}<td style="color:#047857;font-weight:800">${Number.isFinite(enIyi)?kmYaz(enIyi):'-'}</td><td>${Number.isFinite(ort)?kmYaz(ort):'-'}</td><td><b style="color:#1d4ed8">${r.completed?kmYaz(r.totalKm):'-'}</b></td><td>${r.completed?'Tamamlad\u0131':(kms.length+' / 3 a\u015fama')}</td></tr>`;
   }).join('')}
   </table>${rows.length?'':'<p>Hen\u00fcz kay\u0131tl\u0131 oyuncu yok.</p>'}</div>`;
  document.body.appendChild(x);
@@ -2431,13 +2488,13 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   return teams.map(t=>{const uyeler=players.filter(p=>p.teamId===t.id);const avg=n=>{const a=uyeler.map(p=>Number(p['stage'+n+'Km'])).filter(Number.isFinite);return a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN};const stages=[avg(1),avg(2),avg(3)],total=stages.every(Number.isFinite)?stages.reduce((a,b)=>a+b,0):NaN;return {...t,uyeler,stages,total,completed:uyeler.length>0&&uyeler.every(p=>p.completed)}}).sort((a,b)=>Number(a.total??Infinity)-Number(b.total??Infinity));
  }
  function oyuncuDetayHtml(p){
-  const f=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('tr-TR',{maximumFractionDigits:2})+' km':'-';
+  const f=n=>Number.isFinite(Number(n))?kmSayi(n)+' km':'-';
   const stages=[1,2,3].map(n=>{const km=Number(p['stage'+n+'Km']),sec=p['stage'+n+'Selection']||'Tahmin yapılmadı',hedef=p['stage'+n+'Target']||('Konum '+n),moves=Number(p['stage'+n+'Moves']||0);const sn=Number(p['stage'+n+'Seconds']);return `<div class="takim-oyuncu-asama"><div class="to-baslik">${n}. Konum <b>${f(km)}</b></div><div>🎯 Hedef: <b>${yazi(hedef)}</b></div><div>📍 Seçim: <b>${yazi(sec)}</b></div><div>⏱ Süre: <b>${Number.isFinite(sn)?sn+' sn':'-'}</b></div><div>👣 Hareket: <b>${moves}</b></div></div>`}).join('');
   const kms=[p.stage1Km,p.stage2Km,p.stage3Km].map(Number).filter(Number.isFinite),enIyi=kms.length?Math.min(...kms):NaN,ort=kms.length?kms.reduce((a,b)=>a+b,0)/kms.length:NaN,total=Number(p.totalKm);
   return `<div class="takim-oyuncu"><div class="takim-oyuncu-head"><b>${yazi(p.playerName||'Oyuncu')}</b><span>${p.completed?'✅ Tamamladı':kms.length+' / 3 konum'}</span></div><div class="takim-oyuncu-ozet"><span>En iyi: <b>${f(enIyi)}</b></span><span>Ortalama: <b>${f(ort)}</b></span><span>Toplam: <b>${f(total)}</b></span></div><div class="takim-oyuncu-grid">${stages}</div></div>`;
  }
  function takimHtml(rows){
-  const f=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('tr-TR',{maximumFractionDigits:2})+' km':'-';
+  const f=n=>Number.isFinite(Number(n))?kmSayi(n)+' km':'-';
   return rows.length?rows.map((t,i)=>{
    const stageCounts=[1,2,3].map(n=>t.uyeler.map(p=>Number(p['stage'+n+'Km'])).filter(Number.isFinite).length);
    return `<section class="takim-skor"><div class="takim-skor-baslik"><span><span class="takim-sira">${t.completed?(MADALYALAR[i]||(i+1)):'•'}</span> ${yazi(t.name)}</span><span>${t.completed?f(t.total):'Devam ediyor'}</span></div><div class="takim-uyeler">${t.uyeler.length} oyuncu · Takım değerleri, o konumda tahmin yapan oyuncuların ortalamasıdır.</div><div class="takim-asamalar"><div>1. Konum ort.<br><b>${f(t.stages[0])}</b><small>${stageCounts[0]} oyuncu</small></div><div>2. Konum ort.<br><b>${f(t.stages[1])}</b><small>${stageCounts[1]} oyuncu</small></div><div>3. Konum ort.<br><b>${f(t.stages[2])}</b><small>${stageCounts[2]} oyuncu</small></div><div>Takım toplamı<br><b>${f(t.total)}</b><small>3 ortalama toplamı</small></div></div><details class="takim-detay" open><summary>👥 Oyuncu seçimleri ve ayrıntıları</summary>${t.uyeler.map(oyuncuDetayHtml).join('')||'<p>Henüz oyuncu yok.</p>'}</details></section>`
@@ -2951,5 +3008,26 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  };
 })();
 </script>
+<style id="skorSiralamaCss">
+/* Skor tablosunda sirayi ilk bakista okunur kilan stiller */
+.score-box table { border-collapse:separate; border-spacing:0; }
+.score-box th:first-child, .score-box td:first-child { width:64px; text-align:center; }
+.sira-rozet { display:inline-flex; flex-direction:column; align-items:center; justify-content:center; min-width:46px; padding:5px 6px; border-radius:12px; font-weight:900; line-height:1.1; }
+.sira-rozet .sira-no { font-size:17px; }
+.sira-rozet .sira-mad { font-size:15px; }
+.sira-1 { background:linear-gradient(145deg,#fde68a,#f59e0b); color:#422006; box-shadow:0 3px 8px #f59e0b55; }
+.sira-2 { background:linear-gradient(145deg,#e5e7eb,#9ca3af); color:#1f2937; box-shadow:0 3px 8px #9ca3af55; }
+.sira-3 { background:linear-gradient(145deg,#fdba74,#c2703a); color:#3b1d06; box-shadow:0 3px 8px #c2703a55; }
+.sira-normal { background:#eef2ff; color:#3730a3; }
+.sira-bekliyor { background:#f1f5f9; color:#64748b; font-size:13px; }
+.score-box tr.satir-1 td { background:#fffbeb; }
+.score-box tr.satir-2 td { background:#f8fafc; }
+.score-box tr.satir-3 td { background:#fff7ed; }
+.score-box tr.satir-devam td { background:#fff; opacity:.85; }
+.score-box td b { font-size:15px; }
+.oyuncu-ad { display:flex; flex-direction:column; gap:2px; }
+.oyuncu-ad .oyuncu-durum { font-size:11px; font-weight:800; color:#64748b; }
+.oyuncu-ad .oyuncu-durum.bitti { color:#047857; }
+</style>
 </body>
 </html>
