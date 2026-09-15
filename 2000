@@ -1865,7 +1865,7 @@ function kmYaz(v){return Number.isFinite(Number(v))?kmSayi(v)+' km':'-';}
  *   gecemesin. Bonus ancak iyi tahmin yapana tam yansir.
  * ========================================================================= */
 const PUAN_MAX        = 5000;   // bir konumun azami temel puani
-const PUAN_OLCEK_KM   = 2000;   // buyudukce puan daha yavas duser
+const PUAN_OLCEK_KM   = 3000;   // buyudukce puan daha yavas duser
 const PUAN_SURE_BONUS = 500;    // azami sure bonusu
 const PUAN_SURE_TOPLAM= (typeof TIMER_DURATION_SECONDS!=='undefined') ? TIMER_DURATION_SECONDS : 120;
 const SURE_DOLDU_KM   = 19000;  // tahmin yapilmadiginda kaydedilen km
