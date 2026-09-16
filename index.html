@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Avrupa Kupaları Tahmin Aracı</title>
+<!-- SURUM: 2026-09-16-v38-admin-skor-fix -->
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4288,26 +4289,37 @@ const champ = document.getElementById('realChampionSelect').value;
             rebuildDynamicMatches();
             if(isAdminMode) {
                 const dayMatches = matches.filter(m => m.day === currentDay);
-userObj.kayitZamanlari = userObj.kayitZamanlari || {};
-const simdi = new Date().toLocaleString('tr-TR');
+                const yeniSonuclar = { ...realResults };
+                let girilenSonucSayisi = 0;
 
-dayMatches.forEach(match => {
-    if(!isMatchInputOpen(match)) return;
-    const h = document.getElementById(`home_${match.id}`).value;
-    const a = document.getElementById(`away_${match.id}`).value;
-    if(h !== "" && a !== "") {
-        const yeni = { home: parseInt(h), away: parseInt(a) };
-        const eski = userObj[match.id];
-        // Skor ilk kez giriliyorsa veya değiştiyse zamanı güncelle
-        if(!eski || eski.home !== yeni.home || eski.away !== yeni.away) {
-            userObj.kayitZamanlari[match.id] = simdi;
-        }
-        userObj[match.id] = yeni;
-    }
-});
-                db.collection(APP_DATA_COLLECTION).doc(ADMIN_DOC_ID).update(resultPatch)
-                .then(() => { renderTeamCalendarMatrix(); alert("Gerçek maç sonuçları kaydedildi!"); })
-                .catch(err => alert("Hata: " + err));
+                dayMatches.forEach(match => {
+                    const hEl = document.getElementById(`home_${match.id}`);
+                    const aEl = document.getElementById(`away_${match.id}`);
+                    if(!hEl || !aEl) return;
+                    const h = hEl.value;
+                    const a = aEl.value;
+                    if(h !== "" && a !== "") {
+                        yeniSonuclar[match.id] = { home: parseInt(h,10), away: parseInt(a,10) };
+                        girilenSonucSayisi++;
+                    }
+                });
+
+                if(!girilenSonucSayisi) {
+                    alert("Kaydedilecek en az bir gerçek maç skoru gir.");
+                    return;
+                }
+
+                db.collection(APP_DATA_COLLECTION).doc(ADMIN_DOC_ID)
+                  .set({ realResults: yeniSonuclar }, { merge: true })
+                  .then(() => {
+                      realResults = yeniSonuclar;
+                      renderTeamCalendarMatrix();
+                      alert("Gerçek maç sonuçları kaydedildi!");
+                  })
+                  .catch(err => {
+                      console.error("Admin skor kayıt hatası:", err);
+                      alert("Skor kaydedilemedi: " + (err.code || err.message));
+                  });
             } else {
                 let username = "", password = "", champ = "", secondChamp = "";
                 let viewMode = document.getElementById('viewUserSelect').value;
