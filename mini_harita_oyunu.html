@@ -3732,7 +3732,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 <div id="avrupaAvatarModal" class="hidden"><div class="avrupa-avatar-card"><div class="avrupa-avatar-head"><h2>🎭 Avatarını Değiştir</h2><button type="button" onclick="avrupaAvatarKapat()">✕</button></div><p style="color:#64748b;margin-top:5px">Avatar harita-yarismasi Firebase'inde kullanıcı adına göre saklanır.</p><div id="avrupaAvatarGrid" class="avrupa-avatar-grid"></div><div class="avrupa-avatar-actions"><button class="avrupa-avatar-kapat" onclick="avrupaAvatarKapat()">Vazgeç</button><button class="avrupa-avatar-kaydet" onclick="avrupaAvatarKaydet()">Avatarı Kaydet</button></div><div id="avrupaAvatarMesaj"></div></div></div>
 <script id="avrupaAvatarSeciciFix">
 (function(){
- const AV=['🐺','🦊','🦁','🐯','🐆','🐻','🦍','🦬','🦅','🦉','🐧','🦜','🐼','🐨','🐰','🦔','🐸','🐵','🐘','🦒','🦓','🦘','🦈','🐬','🐙','🦂','🐍','🐉','🦄','🤖','👻','🥷','🎯','🧭','⚡','🔥'];
+ const AVATARLAR=['🐺','🦊','🦁','🐯','🎲','🐻','🦍','🦬','🦅','🦉','🐧','🦜','🐼','🐨','🐰','🏹','🐸','🐵','🐘','☠️','🦓','🦘','🦈','🐬','⭐','🦹','👽','🐉','🦄','🤖','👻','🥷','🧛','👑','⚡','🧙'];
  let secili='🎯';
  function ad(){return (localStorage.getItem('haritaBulmacasi_index_kullanici')||localStorage.getItem('haritaBulmacasi_global_oyuncu_adi')||'').trim()}
  function docId(){return encodeURIComponent(ad()).replace(/%/g,'_').slice(0,120)}
