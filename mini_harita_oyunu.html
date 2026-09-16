@@ -142,8 +142,8 @@
 <style id="dinamikOyunCss">.dinamik-home{position:fixed;inset:0;z-index:800;background:linear-gradient(135deg,#eef2ff,#f0fdf4);overflow:auto;padding:24px}.dinamik-home-card{max-width:900px;margin:auto;background:#fff;border-radius:18px;padding:24px;box-shadow:0 20px 60px #0f172a22}.home-head{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:16px}.home-head h1{font-size:28px;font-weight:900}.home-head button,.dinamik-admin-actions button,.join-btn{border:0;border-radius:10px;padding:11px 16px;background:#4f46e5;color:#fff;font-weight:900;cursor:pointer}.active-game{margin:18px 0;padding:18px;border:2px solid #22c55e;background:#f0fdf4;border-radius:14px}.active-game h2{font-size:22px;font-weight:900;color:#166534}.player-entry{display:flex;gap:8px;margin-top:12px}.player-entry input{flex:1;border:1px solid #86efac;border-radius:9px;padding:11px}.archive-title{font-weight:900;font-size:18px;margin:18px 0 8px}.archive-item{border:1px solid #cbd5e1;border-radius:11px;padding:12px;margin-top:8px;display:flex;justify-content:space-between;gap:10px}.archive-item button{border:0;background:#e0e7ff;color:#3730a3;border-radius:8px;padding:7px 10px;font-weight:800}.dinamik-admin-box{border:2px solid #8b5cf6;background:#f5f3ff;border-radius:14px;padding:14px;margin-bottom:16px}.dinamik-admin-box h4{font-size:20px;font-weight:900}.dinamik-admin-box label{display:block;font-size:12px;font-weight:800;margin:8px 0 4px}.dinamik-admin-actions{display:flex;gap:8px;margin-top:10px}.dinamik-admin-actions .arsiv-btn{background:#334155}.uid-note{font-size:11px;color:#64748b;margin-top:8px}.menu-return{border:0;border-radius:8px;padding:7px 10px;background:#0f766e;color:#fff;font-weight:900;margin-top:5px}.archive-modal{position:fixed;inset:0;z-index:40000;background:#0f172acc;display:flex;align-items:center;justify-content:center;padding:18px}.archive-dialog{width:min(900px,95vw);max-height:85vh;overflow:auto;background:#fff;border-radius:16px;padding:16px}.archive-dialog table{width:100%;border-collapse:collapse}.archive-dialog th,.archive-dialog td{padding:8px;border-bottom:1px solid #e2e8f0;text-align:left}.hidden{display:none!important}@media(max-width:650px){.player-entry{flex-direction:column}.home-head{align-items:flex-start}.archive-item{flex-direction:column}}</style><style>.hub{position:fixed;inset:0;z-index:700;background:linear-gradient(135deg,#eef2ff,#f0fdf4);overflow:auto;padding:24px}.hub-card{max-width:900px;margin:auto;background:white;border-radius:20px;padding:24px;box-shadow:0 20px 60px #0f172a22}.hub-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:15px}.hub-head h1{font-size:28px;font-weight:900}.hub button,.game-admin button,.game-action,.home-btn{border:0;border-radius:9px;padding:10px 14px;background:#4f46e5;color:white;font-weight:900;cursor:pointer}.game-card{margin-top:12px;border:1px solid #cbd5e1;border-radius:13px;padding:14px;display:flex;justify-content:space-between;gap:12px;align-items:center}.game-card.active{border:2px solid #22c55e;background:#f0fdf4}.badge{display:inline-block;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:900}.played{background:#dcfce7;color:#166534}.unplayed{background:#f1f5f9;color:#475569}.progress{background:#fef3c7;color:#92400e}.game-admin{border:2px solid #8b5cf6;background:#f5f3ff;border-radius:13px;padding:14px;margin-bottom:16px}.game-admin input{margin-top:8px}.home-btn{background:#0f766e;margin-left:10px}.score-pop{position:fixed;inset:0;z-index:50000;background:#0f172acc;display:flex;align-items:center;justify-content:center;padding:18px}.score-box{width:min(900px,96vw);max-height:85vh;overflow:auto;background:white;border-radius:16px;padding:16px}.score-box table{width:100%;border-collapse:collapse}.score-box th,.score-box td{padding:8px;border-bottom:1px solid #e2e8f0;text-align:left}@media(max-width:650px){.game-card{align-items:flex-start;flex-direction:column}.hub-head{align-items:flex-start}}</style>
 <script id="surumDamgasi">
 /* SURUM DAMGASI - her yeni surumde asagidaki iki satiri guncelle. */
-window.APP_VERSION='2026-09-16-v46-oyuna-gir-fix';
-window.APP_VERSION_NOT='Avrupa profiliyle Oyuna Gir düğmesi düzeltildi';
+window.APP_VERSION='2026-09-16-v47-cift-firebase';
+window.APP_VERSION_NOT='Kullanıcılar Avrupa Firebase, oyunlar harita-yarismasi games koleksiyonu';
 console.log('%c SURUM: '+window.APP_VERSION+' ','background:#0f766e;color:#fff;font-weight:900;padding:3px 10px;border-radius:5px');
 console.log('Icerik: '+window.APP_VERSION_NOT);
 /* Surum bilgisi yalnizca konsolda gosterilir; ekranda etiket yoktur. */
@@ -366,7 +366,7 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
         const EMBEDDED_CHANCE_VALUES = null;
         const EMBEDDED_TIMER_SECONDS = null;
         const EMBEDDED_PUAN_OLCEK = null;
-        const EMBEDDED_FIREBASE_CONFIG = {"apiKey":"AIzaSyA7WBtXVgHXWs7Jb8esNIFh-pOGbP90QNs","authDomain":"tsl26-27.firebaseapp.com","databaseURL":"https://tsl26-27-default-rtdb.europe-west1.firebasedatabase.app","projectId":"tsl26-27","storageBucket":"tsl26-27.firebasestorage.app","messagingSenderId":"335812894814","appId":"1:335812894814:web:c7e21567248ad908c214cf","measurementId":"G-Z44J06DMWL"};
+        const EMBEDDED_FIREBASE_CONFIG = {"apiKey":"AIzaSyBtK_JnewTNftZb690Yh6fZ-6pcqmsiB88","authDomain":"harita-yarismasi.firebaseapp.com","projectId":"harita-yarismasi","storageBucket":"harita-yarismasi.firebasestorage.app","messagingSenderId":"967222839746","appId":"1:967222839746:web:ed15daa18a9495ec43ae5b"};
         const SERIES_ID = EMBEDDED_GAME_ID || (localStorage.getItem('haritaEkranModu') === 'play' ? localStorage.getItem('haritaAktifOyunId') : null) || 'LOBBY';
         // =========================================================================
         const MAX_HAREKET = 100; 
@@ -1768,7 +1768,7 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
             const kayitli=localStorage.getItem(STORAGE_KEY_OYUNCU_ADI); const inp=document.getElementById('oyuncuAdi'); if(inp && kayitli) inp.value=kayitli;
             if(durum){ durum.textContent='🟢 Yarış bağlantısı hazır'; durum.className='text-xs text-center mt-1 text-emerald-600 font-semibold'; }
             try {
-              const oyunRef=firebaseDb.collection('miniHaritaGames').doc(SERIES_ID);
+              const oyunRef=firebaseDb.collection('games').doc(SERIES_ID);
               const oyunSnap=await oyunRef.get();
               if(!oyunSnap.exists && SERIES_ID!=='LOBBY'){
                 await oyunRef.set({gameId:SERIES_ID,status:'active',stageCount:TOTAL_STAGES,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
@@ -1782,7 +1782,7 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
         async function firebaseAsamaKaydet(stageNum, mesafeKm, secimAdi, hedefAdi, hareket){
           if(!firebaseHazir || !firebaseUser) return false;
           const oyuncuAdi=localStorage.getItem(STORAGE_KEY_OYUNCU_ADI) || 'Oyuncu';
-          const ref=firebaseDb.collection('miniHaritaGames').doc(SERIES_ID).collection('players').doc(firebaseUser.uid);
+          const ref=firebaseDb.collection('games').doc(SERIES_ID).collection('players').doc(firebaseUser.uid);
           const data={uid:firebaseUser.uid,playerName:oyuncuAdi,playerAvatar:globalOyuncuAvatarAl(),gameId:SERIES_ID,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
 
           // Sadece son aşamayı değil, yerelde bulunan bütün aşamaları her yazmada tekrar gönder.
@@ -1830,7 +1830,7 @@ console.log('Icerik: '+window.APP_VERSION_NOT);
           if(!firebaseHazir){ alan.innerHTML='<p class="text-sm text-red-600">Firebase bağlantısı hazır değil.</p>'; return; }
           durum.textContent='Sonuçlar yenileniyor...';
           try{
-            const snap=await firebaseDb.collection('miniHaritaGames').doc(SERIES_ID).collection('players').get();
+            const snap=await firebaseDb.collection('games').doc(SERIES_ID).collection('players').get();
             const rows=snap.docs.map(d=>d.data()).sort((a,b)=>{
               if(a.completed&&!b.completed)return -1; if(!a.completed&&b.completed)return 1;
               return Number(a.totalKm??Infinity)-Number(b.totalKm??Infinity);
@@ -2004,25 +2004,7 @@ function konumSiralamasi(rows,stage){
 function aktifOyunId(){return localStorage.getItem('haritaAktifOyunId')||'';}
 function oyunModu(){return localStorage.getItem('haritaEkranModu')||'home';}
 
-async function firebaseBaslat(){
- const durum=document.getElementById('firebaseDurum');
- try{
-  await hariciScriptYukle('https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js');
-  await hariciScriptYukle('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js');
-  if(!firebase.apps.length) firebase.initializeApp(EMBEDDED_FIREBASE_CONFIG);
-  firebaseDb=firebase.firestore();
-  const ad=(localStorage.getItem('haritaBulmacasi_index_kullanici')||'').trim();
-  if(!ad) throw new Error('Avrupa hesabı bulunamadı. Oyunu index içinden aç.');
-  let h=0; for(const c of ad) h=((h*31)+c.charCodeAt(0))>>>0;
-  firebaseUser={uid:'AVRUPA_'+h.toString(36)+'_'+encodeURIComponent(ad).replace(/%/g,'').slice(0,40),isAnonymous:false};
-  firebaseHazir=true; window.__firebaseSdkHazir=true; window.__avrupaMiniProfil={username:ad,avatar:'🎯'};
-  localStorage.setItem('haritaBulmacasi_global_oyuncu_adi',ad);
-  localStorage.setItem('haritaBulmacasi_global_oyuncu_avatar','🎯');
-  document.getElementById('uyelikKapisi')?.classList.add('hidden');
-  if(durum){durum.textContent='🟢 '+ad;durum.className='text-xs text-center mt-1 text-emerald-600 font-semibold';}
-  await acilisKarari();
- }catch(e){console.error(e);firebaseHazir=false;if(durum)durum.textContent='🔴 '+e.message;}
-}
+async function firebaseBaslat(){ const durum=document.getElementById('firebaseDurum'); try{ await hariciScriptYukle('https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js'); await hariciScriptYukle('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js'); if(!firebase.apps.length)firebase.initializeApp(EMBEDDED_FIREBASE_CONFIG); firebaseDb=firebase.firestore(); const ad=(localStorage.getItem('haritaBulmacasi_index_kullanici')||'').trim(); if(!ad)throw new Error('Avrupa hesabı bulunamadı. Oyunu index içinden aç.'); let h=0;for(const c of ad)h=((h*31)+c.charCodeAt(0))>>>0; firebaseUser={uid:'AVRUPA_'+h.toString(36)+'_'+encodeURIComponent(ad).replace(/%/g,'').slice(0,40),isAnonymous:false}; firebaseHazir=true;window.__firebaseSdkHazir=true;window.__avrupaMiniProfil={username:ad,avatar:'🎯'};localStorage.setItem('haritaBulmacasi_global_oyuncu_adi',ad);localStorage.setItem('haritaBulmacasi_global_oyuncu_avatar','🎯');document.getElementById('uyelikKapisi')?.classList.add('hidden');if(durum){durum.textContent='🟢 '+ad;durum.className='text-xs text-center mt-1 text-emerald-600 font-semibold';}await acilisKarari(); }catch(e){console.error(e);firebaseHazir=false;if(durum)durum.textContent='🔴 '+e.message;} }
 const GLOBAL_OYUNCU_ADI_KEY='haritaBulmacasi_global_oyuncu_adi';
 const GLOBAL_OYUNCU_AVATAR_KEY='haritaBulmacasi_global_oyuncu_avatar';
 function globalOyuncuAdiAl(){return (localStorage.getItem(GLOBAL_OYUNCU_ADI_KEY)||'').trim();}
@@ -2042,8 +2024,8 @@ function globalOyuncuAdiSor(){
 async function acilisKarari(){
  const id=aktifOyunId();
  if(oyunModu()==='play'&&id){
-  const gs=await firebaseDb.collection('miniHaritaGames').doc(id).get();
-  const ps=await firebaseDb.collection('miniHaritaGames').doc(id).collection('players').doc(firebaseUser.uid).get();
+  const gs=await firebaseDb.collection('games').doc(id).get();
+  const ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();
   if(gs.exists&&ps.exists&&!ps.data().completed){oyunEkraniniGoster();return;}
   if(gs.exists&&ps.exists&&ps.data().completed){sonucEkraniniAc(id,gs.data().name||id);return;}
  }
@@ -2065,11 +2047,11 @@ function anaSayfayiGoster(mesaj=''){
 async function anaSayfayiYukle(){
  localStorage.setItem('haritaEkranModu','home');
  anaSayfayiGoster();
- const snap=await firebaseDb.collection('miniHaritaGames').get();
+ const snap=await firebaseDb.collection('games').get();
  oyunListesi=snap.docs.map(d=>({id:d.id,...d.data()})).filter(g=>g.id!=='LOBBY').sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
  let html='<h2 style="font-weight:900;margin-top:18px">Oyunlar</h2>';
  for(const g of oyunListesi){
-  const ps=await firebaseDb.collection('miniHaritaGames').doc(g.id).collection('players').doc(firebaseUser.uid).get();
+  const ps=await firebaseDb.collection('games').doc(g.id).collection('players').doc(firebaseUser.uid).get();
   const p=ps.exists?ps.data():null;
   let durum='Oynanmadı',sinif='unplayed',buton='';
   if(p?.completed){durum='Oynandı';sinif='played';buton=`<button class="game-action skor-ac" data-game-id="${temizMetin(g.id)}" data-game-name="${temizMetin(g.name||g.id)}">Skor Tablosu</button>`;}
@@ -2090,7 +2072,7 @@ async function oyunaKatil(id){
  const rumuz=giris.trim();
  if(rumuz.length<2){alert('Ad veya rumuz en az 2 karakter olmalı.');return;}
  localStorage.setItem(GLOBAL_OYUNCU_ADI_KEY,rumuz);
- const ref=firebaseDb.collection('miniHaritaGames').doc(id),gs=await ref.get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return;}
+ const ref=firebaseDb.collection('games').doc(id),gs=await ref.get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return;}
  const pr=ref.collection('players').doc(firebaseUser.uid),ps=await pr.get();
  if(ps.exists){if(ps.data().completed){alert('Bu oyunu tamamladın. Yalnızca skor tablosunu görebilirsin.');return;}return oyunaDevamEt(id);}
  await pr.set({uid:firebaseUser.uid,gameId:id,playerName:rumuz,playerAvatar:globalOyuncuAvatarAl(),completed:false,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
@@ -2099,7 +2081,7 @@ async function oyunaKatil(id){
  oyunuYereldeHazirla(id,gs.data().targets,rumuz,1);oyunuYenidenYukle();
 }
 async function oyunaDevamEt(id){
- const gs=await firebaseDb.collection('miniHaritaGames').doc(id).get(),ps=await firebaseDb.collection('miniHaritaGames').doc(id).collection('players').doc(firebaseUser.uid).get();
+ const gs=await firebaseDb.collection('games').doc(id).get(),ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();
  if(!gs.exists||!ps.exists)return anaSayfayiYukle();if(ps.data().completed)return skorTablosunuAc(id,gs.data().name||id);
  let asama=1;if(Number.isFinite(Number(ps.data().stage1Km)))asama=2;if(Number.isFinite(Number(ps.data().stage2Km)))asama=3;
  localStorage.setItem('haritaAktifOyunSans', gs.data().chanceEnabled===false?'0':'1');
@@ -2119,7 +2101,7 @@ function oyunuYereldeHazirla(id,targets,rumuz,asama,temiz=true){
  * Her konum hucresinde: km, puan ve o konumdaki derece gosterilir.
  * ========================================================================= */
 async function skorTablosuOlustur(id,name,gizliMod=false){
- const snap=await firebaseDb.collection('miniHaritaGames').doc(id).collection('players').get();
+ const snap=await firebaseDb.collection('games').doc(id).collection('players').get();
  const ham=snap.docs.map(d=>d.data());
 
  // Toplam puan hesaplanir ve siralama buna gore yapilir.
@@ -2231,14 +2213,14 @@ async function adminYeniOyunAc(){
  if(ekrandaki.length){HEDEF_VERILERI=ekrandaki;localStorage.setItem('haritaBulmacasi_admin_hedefler',JSON.stringify(ekrandaki));}
  const targets=codes.map(c=>HEDEF_VERILERI.find(h=>String(h.code).trim()===String(c).trim()));
  if(targets.some(x=>!x)){msg.textContent='Kodlardan biri koordinat listesinde yok. Önce koordinatın listede göründüğünü kontrol et.';return;}
- try{const gameId='OYUN_'+Date.now();await firebaseDb.collection('miniHaritaGames').doc(gameId).set({gameId,name,status:'active',stageCount:3,targets:targets.map(x=>({code:String(x.code),coord:String(x.coord)})),chanceEnabled:(localStorage.getItem('haritaBulmacasi_sans_aktif')==='1'),timerSeconds:adminSureOku(),puanOlcek:adminPuanOlcekOku(),createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});msg.textContent='✅ Oyun kaydedildi.';document.getElementById('yeniOyunAdi').value='';document.getElementById('yeniOyunKodlari').value='';await adminOyunListesiniYukle();}catch(e){msg.textContent='❌ '+e.message+' | Admin UID belgesini kontrol et.';}
+ try{const gameId='OYUN_'+Date.now();await firebaseDb.collection('games').doc(gameId).set({gameId,name,status:'active',stageCount:3,targets:targets.map(x=>({code:String(x.code),coord:String(x.coord)})),chanceEnabled:(localStorage.getItem('haritaBulmacasi_sans_aktif')==='1'),timerSeconds:adminSureOku(),puanOlcek:adminPuanOlcekOku(),createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});msg.textContent='✅ Oyun kaydedildi.';document.getElementById('yeniOyunAdi').value='';document.getElementById('yeniOyunKodlari').value='';await adminOyunListesiniYukle();}catch(e){msg.textContent='❌ '+e.message+' | Admin UID belgesini kontrol et.';}
 }
 async function adminOyunListesiniYukle(){
  const alan=document.getElementById('adminOyunListesi');if(!alan)return;
  if(!firebaseDb||!firebaseHazir){alan.innerHTML='<p>Firebase bağlantısı bekleniyor...</p>';return;}
  alan.innerHTML='<p>Oyunlar yükleniyor...</p>';
  try{
-  const snap=await firebaseDb.collection('miniHaritaGames').get();
+  const snap=await firebaseDb.collection('games').get();
   const games=snap.docs.map(d=>({id:d.id,...d.data()})).filter(g=>g.id!=='LOBBY').sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
   alan.innerHTML=games.length?games.map(g=>`<div class="archive-item" style="align-items:center"><div><b>${temizMetin(g.name||g.id)}</b><div><small>${g.status==='active'?'🟢 Açık oyun':'🔴 Kapalı oyun'} · ${(g.targets||[]).map(t=>temizMetin(t.code)).join(', ')}</small></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button type="button" onclick="adminOyunuDuzenle('${g.id}')">✏️ Değiştir</button><button type="button" style="background:${g.status==='active'?'#f59e0b':'#16a34a'};color:#fff" onclick="adminOyunDurumuDegistir('${g.id}','${g.status||'active'}')">${g.status==='active'?'⏸️ Kapat':'▶️ Aç'}</button><button type="button" style="background:#fee2e2;color:#b91c1c" onclick="adminOyunuSil('${g.id}','${String(g.name||g.id).replace(/'/g,"\\'")}')">🗑️ Sil</button></div></div>`).join(''):'<p>Henüz oluşturulmuş oyun yok.</p>';
  }catch(e){console.error('Oyun listesi hatası',e);alan.innerHTML='<p style="color:#b91c1c">Oyunlar yüklenemedi: '+temizMetin(e.message)+'</p><p style="font-size:11px;color:#64748b">Firebase projesi: harita-mini-oyun</p>';}
@@ -2246,7 +2228,7 @@ async function adminOyunListesiniYukle(){
 async function adminOyunuDuzenle(id){
  const msg=document.getElementById('oyunYonetimMesaj');
  try{
-  const snap=await firebaseDb.collection('miniHaritaGames').doc(id).get();if(!snap.exists)throw new Error('Oyun bulunamadı.');
+  const snap=await firebaseDb.collection('games').doc(id).get();if(!snap.exists)throw new Error('Oyun bulunamadı.');
   const g=snap.data(),mevcutKodlar=(g.targets||[]).map(t=>t.code).join(', ');
   const name=prompt('Oyun adı:',g.name||'');if(name===null)return;
   const kodMetni=prompt('Üç konum kodu:',mevcutKodlar);if(kodMetni===null)return;
@@ -2255,20 +2237,20 @@ async function adminOyunuDuzenle(id){
   const ekrandaki=ekrandakiKoordinatlariOku();if(ekrandaki.length){HEDEF_VERILERI=ekrandaki;localStorage.setItem('haritaBulmacasi_admin_hedefler',JSON.stringify(ekrandaki));}
   const targets=codes.map(c=>HEDEF_VERILERI.find(x=>String(x.code).trim()===String(c).trim()));
   if(targets.some(x=>!x)){alert('Kodlardan biri koordinat listesinde yok.');return;}
-  await firebaseDb.collection('miniHaritaGames').doc(id).update({name:name.trim(),targets:targets.map(x=>({code:String(x.code),coord:String(x.coord)})),chanceEnabled:(localStorage.getItem('haritaBulmacasi_sans_aktif')==='1'),timerSeconds:adminSureOku(),puanOlcek:adminPuanOlcekOku(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+  await firebaseDb.collection('games').doc(id).update({name:name.trim(),targets:targets.map(x=>({code:String(x.code),coord:String(x.coord)})),chanceEnabled:(localStorage.getItem('haritaBulmacasi_sans_aktif')==='1'),timerSeconds:adminSureOku(),puanOlcek:adminPuanOlcekOku(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
   msg.textContent='✅ Oyun değiştirildi.';await adminOyunListesiniYukle();
  }catch(e){msg.textContent='❌ Oyun değiştirilemedi: '+e.message;}
 }
 async function adminOyunDurumuDegistir(id,status){
  const msg=document.getElementById('oyunYonetimMesaj'),yeni=status==='active'?'closed':'active';
- try{await firebaseDb.collection('miniHaritaGames').doc(id).update({status:yeni,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});msg.textContent=yeni==='active'?'✅ Oyun açıldı.':'✅ Oyun kapatıldı.';await adminOyunListesiniYukle();}catch(e){msg.textContent='❌ Oyun durumu değiştirilemedi: '+e.message;}
+ try{await firebaseDb.collection('games').doc(id).update({status:yeni,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});msg.textContent=yeni==='active'?'✅ Oyun açıldı.':'✅ Oyun kapatıldı.';await adminOyunListesiniYukle();}catch(e){msg.textContent='❌ Oyun durumu değiştirilemedi: '+e.message;}
 }
 async function adminOyunuSil(id,name){
  if(!adminYetkili||!confirm('“'+name+'” oyunu ve tüm oyuncu skorları silinsin mi?'))return;
  const msg=document.getElementById('oyunYonetimMesaj');
  try{
-  const players=await firebaseDb.collection('miniHaritaGames').doc(id).collection('players').get();
-  const batch=firebaseDb.batch();players.docs.forEach(d=>batch.delete(d.ref));batch.delete(firebaseDb.collection('miniHaritaGames').doc(id));await batch.commit();
+  const players=await firebaseDb.collection('games').doc(id).collection('players').get();
+  const batch=firebaseDb.batch();players.docs.forEach(d=>batch.delete(d.ref));batch.delete(firebaseDb.collection('games').doc(id));await batch.commit();
   if(aktifOyunId()===id){localStorage.removeItem('haritaAktifOyunId');localStorage.setItem('haritaEkranModu','home');}
   msg.textContent='✅ Oyun silindi.';await adminOyunListesiniYukle();
  }catch(e){msg.textContent='❌ Oyun silinemedi: '+e.message;}
@@ -2575,19 +2557,19 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   document.getElementById('takimOlusturTab').classList.toggle('passive',t!=='olustur');document.getElementById('takimGirTab').classList.toggle('passive',t!=='gir');if(t==='gir')takimlariDinle();
  };
  async function panelAc(id){
-  seciliOyunId=id;const gs=await firebaseDb.collection('miniHaritaGames').doc(id).get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return}seciliOyun=gs.data();
+  seciliOyunId=id;const gs=await firebaseDb.collection('games').doc(id).get();if(!gs.exists||gs.data().status!=='active'){alert('Bu oyun artık açık değil.');return}seciliOyun=gs.data();
   const ad=globalOyuncuAdiAl()||'OYUNCU',av=globalOyuncuAvatarAl();document.getElementById('takimRumuz').value=ad;document.getElementById('oyunKatilimAd').textContent=ad;document.getElementById('oyunKatilimAvatar').textContent=av;document.getElementById('yeniTakimAdi').value='';document.getElementById('takimMesaj').textContent='';document.getElementById('takimModal').classList.remove('hidden');takimlariDinle();
  }
  window.oyunaKatil=panelAc;
  function takimlariDinle(){
   if(takimDinleyici)takimDinleyici();const alan=document.getElementById('takimListesi');alan.innerHTML='Takımlar yükleniyor...';
-  takimDinleyici=firebaseDb.collection('miniHaritaGames').doc(seciliOyunId).collection('teams').onSnapshot(s=>{
+  takimDinleyici=firebaseDb.collection('games').doc(seciliOyunId).collection('teams').onSnapshot(s=>{
    const teams=s.docs.map(d=>({id:d.id,...d.data()})).filter(t=>(t.status||'open')==='open').sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
    alan.innerHTML=teams.length?teams.map(t=>`<div class="takim-item"><div><b>${yazi(t.name)}</b><div style="font-size:12px;color:#64748b">${Number(t.memberCount||0)} oyuncu</div></div><button onclick="takimaGir('${t.id}')">Takıma Gir</button></div>`).join(''):'<p style="color:#64748b">Henüz takım oluşturulmadı.</p>';
   },e=>alan.innerHTML='<p style="color:#b91c1c">Takımlar alınamadı: '+yazi(e.message)+'</p>');
  }
  async function katilimiTamamla(teamId,teamName,rumuz){
-  const gameRef=firebaseDb.collection('miniHaritaGames').doc(seciliOyunId),playerRef=gameRef.collection('players').doc(firebaseUser.uid);
+  const gameRef=firebaseDb.collection('games').doc(seciliOyunId),playerRef=gameRef.collection('players').doc(firebaseUser.uid);
   await playerRef.set({uid:firebaseUser.uid,gameId:seciliOyunId,playerName:rumuz,playerAvatar:globalOyuncuAvatarAl(),playMode:'team',teamId,teamName,ready:false,completed:false,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
   localStorage.setItem(GLOBAL_OYUNCU_ADI_KEY,rumuz);localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,teamId);localStorage.setItem(TEAM_NAME_KEY,teamName);localStorage.setItem('haritaAktifOyunSans',seciliOyun.chanceEnabled===false?'0':'1');oyunAyarlariniYereleYaz(seciliOyun);
   beklemeTeamId=teamId;beklemeTeamName=teamName;beklemeRumuz=rumuz;
@@ -2599,7 +2581,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   document.getElementById('beklemeMesaj').textContent='';
   modal.classList.remove('hidden');
   if(beklemeDinleyici)beklemeDinleyici();
-  beklemeDinleyici=firebaseDb.collection('miniHaritaGames').doc(seciliOyunId).collection('players').where('teamId','==',beklemeTeamId).onSnapshot(snap=>{
+  beklemeDinleyici=firebaseDb.collection('games').doc(seciliOyunId).collection('players').where('teamId','==',beklemeTeamId).onSnapshot(snap=>{
    const uyeler=snap.docs.map(d=>d.data()).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
    const alan=document.getElementById('beklemeUyeler');
    alan.innerHTML=uyeler.length?uyeler.map(u=>`<div class="bekleme-uye"><div class="bekleme-avatar" style="background:${renk(u.uid)}">${yazi(u.playerAvatar||basHarf(u.playerName))}</div><div><b>${yazi(u.playerName||'Oyuncu')}</b><small>${u.ready?'Oyuna giriş yaptı':'Bekleme odasında'}</small></div></div>`).join(''):'<div class="bekleme-bos">Henüz oyuncu görünmüyor.</div>';
@@ -2609,7 +2591,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  window.takimdanOyunaBasla=async function(){
   const m=document.getElementById('beklemeMesaj'),b=document.getElementById('beklemeOyunaGir');b.disabled=true;m.textContent='Oyun hazırlanıyor...';
   try{
-   await firebaseDb.collection('miniHaritaGames').doc(seciliOyunId).collection('players').doc(firebaseUser.uid).set({ready:true,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+   await firebaseDb.collection('games').doc(seciliOyunId).collection('players').doc(firebaseUser.uid).set({ready:true,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
    oyunuYereldeHazirla(seciliOyunId,seciliOyun.targets,beklemeRumuz,1);takimBeklemeKapat();oyunuYenidenYukle();
   }catch(e){m.textContent='Oyuna girilemedi: '+e.message;b.disabled=false}
  };
@@ -2617,7 +2599,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   const rumuz=rumuzOku(),m=document.getElementById('takimMesaj');
   if(rumuz.length<2){m.textContent='Bireysel giriş için en az 2 karakterlik rumuz gir.';return}
   try{
-   const gameRef=firebaseDb.collection('miniHaritaGames').doc(seciliOyunId),playerRef=gameRef.collection('players').doc(firebaseUser.uid);
+   const gameRef=firebaseDb.collection('games').doc(seciliOyunId),playerRef=gameRef.collection('players').doc(firebaseUser.uid);
    await playerRef.set({uid:firebaseUser.uid,gameId:seciliOyunId,playerName:rumuz,playerAvatar:globalOyuncuAvatarAl(),playMode:'individual',teamId:firebase.firestore.FieldValue.delete(),teamName:firebase.firestore.FieldValue.delete(),completed:false,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),createdAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
    localStorage.setItem(GLOBAL_OYUNCU_ADI_KEY,rumuz);localStorage.removeItem(TEAM_KEY);localStorage.removeItem(TEAM_NAME_KEY);localStorage.setItem('haritaOyunTuru','individual');localStorage.setItem('haritaAktifOyunSans',seciliOyun.chanceEnabled===false?'0':'1');oyunAyarlariniYereleYaz(seciliOyun);
    oyunuYereldeHazirla(seciliOyunId,seciliOyun.targets,rumuz,1);takimPanelKapat();oyunuYenidenYukle();
@@ -2625,18 +2607,18 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  };
  window.takimOlusturVeGir=async function(){
   const rumuz=rumuzOku(),ad=(document.getElementById('yeniTakimAdi').value||'').trim(),m=document.getElementById('takimMesaj');if(rumuz.length<2||ad.length<2){m.textContent='Rumuz ve takım adı en az 2 karakter olmalı.';return}
-  try{const ref=firebaseDb.collection('miniHaritaGames').doc(seciliOyunId).collection('teams').doc();await ref.set({name:ad,status:'open',memberUids:[firebaseUser.uid],memberCount:1,createdBy:firebaseUser.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});await katilimiTamamla(ref.id,ad,rumuz)}catch(e){m.textContent='Takım oluşturulamadı: '+e.message}
+  try{const ref=firebaseDb.collection('games').doc(seciliOyunId).collection('teams').doc();await ref.set({name:ad,status:'open',memberUids:[firebaseUser.uid],memberCount:1,createdBy:firebaseUser.uid,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});await katilimiTamamla(ref.id,ad,rumuz)}catch(e){m.textContent='Takım oluşturulamadı: '+e.message}
  };
  window.takimaGir=async function(teamId){
   const rumuz=rumuzOku(),m=document.getElementById('takimMesaj');if(rumuz.length<2){m.textContent='Önce en az 2 karakterlik rumuz gir.';return}
-  const ref=firebaseDb.collection('miniHaritaGames').doc(seciliOyunId).collection('teams').doc(teamId);try{let ad='';await firebaseDb.runTransaction(async tx=>{const s=await tx.get(ref);if(!s.exists)throw new Error('Takım bulunamadı.');const t=s.data();if((t.status||'open')!=='open')throw new Error('Bu takım artık katılıma kapalı.');const uyeler=Array.isArray(t.memberUids)?[...t.memberUids]:[];if(uyeler.includes(firebaseUser.uid))throw new Error('Bu takımda zaten bulunuyorsun.');uyeler.push(firebaseUser.uid);ad=t.name||'Takım';tx.update(ref,{memberUids:uyeler,memberCount:uyeler.length,updatedAt:firebase.firestore.FieldValue.serverTimestamp()})});await katilimiTamamla(teamId,ad,rumuz)}catch(e){m.textContent=e.message}
+  const ref=firebaseDb.collection('games').doc(seciliOyunId).collection('teams').doc(teamId);try{let ad='';await firebaseDb.runTransaction(async tx=>{const s=await tx.get(ref);if(!s.exists)throw new Error('Takım bulunamadı.');const t=s.data();if((t.status||'open')!=='open')throw new Error('Bu takım artık katılıma kapalı.');const uyeler=Array.isArray(t.memberUids)?[...t.memberUids]:[];if(uyeler.includes(firebaseUser.uid))throw new Error('Bu takımda zaten bulunuyorsun.');uyeler.push(firebaseUser.uid);ad=t.name||'Takım';tx.update(ref,{memberUids:uyeler,memberCount:uyeler.length,updatedAt:firebase.firestore.FieldValue.serverTimestamp()})});await katilimiTamamla(teamId,ad,rumuz)}catch(e){m.textContent=e.message}
  };
  const eskiDevam=window.oyunaDevamEt;
- window.oyunaDevamEt=async function(id){const ps=await firebaseDb.collection('miniHaritaGames').doc(id).collection('players').doc(firebaseUser.uid).get();if(ps.exists){const p=ps.data();if(p.teamId){localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');if(p.ready!==true){const gs=await firebaseDb.collection('miniHaritaGames').doc(id).get();seciliOyunId=id;seciliOyun=gs.data();beklemeTeamId=p.teamId;beklemeTeamName=p.teamName||'Takım';beklemeRumuz=p.playerName||'Oyuncu';takimBeklemeAc();return}}else{localStorage.setItem('haritaOyunTuru','individual');localStorage.removeItem(TEAM_KEY);localStorage.removeItem(TEAM_NAME_KEY)}}return eskiDevam(id)};
+ window.oyunaDevamEt=async function(id){const ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(ps.exists){const p=ps.data();if(p.teamId){localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');if(p.ready!==true){const gs=await firebaseDb.collection('games').doc(id).get();seciliOyunId=id;seciliOyun=gs.data();beklemeTeamId=p.teamId;beklemeTeamName=p.teamName||'Takım';beklemeRumuz=p.playerName||'Oyuncu';takimBeklemeAc();return}}else{localStorage.setItem('haritaOyunTuru','individual');localStorage.removeItem(TEAM_KEY);localStorage.removeItem(TEAM_NAME_KEY)}}return eskiDevam(id)};
  async function pinYayinla(lat,lng){
   const gameId=aktifOyunId(),teamId=localStorage.getItem(TEAM_KEY),stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||0);if(!firebaseHazir||!gameId||!teamId||!stage)return;
   // gameId alani zorunlu: Firestore kurallari teamPins create/update icin gameId esitligi ariyor.
-  await firebaseDb.collection('miniHaritaGames').doc(gameId).collection('teamPins').doc(firebaseUser.uid).set({uid:firebaseUser.uid,gameId,teamId,playerName:globalOyuncuAdiAl()||'Oyuncu',playerAvatar:globalOyuncuAvatarAl(),stage,lat:Number(lat),lng:Number(lng),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(e=>{console.error('Takim pini yayinlanamadi',e);const m=document.getElementById('mesajAlani');if(m)m.textContent='⚠️ Takım pini paylaşılamadı: '+(e.code||e.message);});
+  await firebaseDb.collection('games').doc(gameId).collection('teamPins').doc(firebaseUser.uid).set({uid:firebaseUser.uid,gameId,teamId,playerName:globalOyuncuAdiAl()||'Oyuncu',playerAvatar:globalOyuncuAvatarAl(),stage,lat:Number(lat),lng:Number(lng),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(e=>{console.error('Takim pini yayinlanamadi',e);const m=document.getElementById('mesajAlani');if(m)m.textContent='⚠️ Takım pini paylaşılamadı: '+(e.code||e.message);});
  }
  const eskiPin=window.pinAtVeKoordinatGuncelle;
  window.pinAtVeKoordinatGuncelle=function(lat,lng){const r=eskiPin.apply(this,arguments);pinYayinla(lat,lng);return r};
@@ -2645,14 +2627,14 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   const gameId=aktifOyunId(),teamId=localStorage.getItem(TEAM_KEY);if(!firebaseDb||!gameId||!teamId||!tahminHaritasi)return;
   // Liste sorgusu oyun altindaki pinleri alir; yalnizca ayni takim pinleri istemcide cizilir.
   // Firestore kuralinda teamPins list izni, oyuncunun games/{gameId}/players/{uid} kaydina baglanmalidir.
-  takimPinDinleyici=firebaseDb.collection('miniHaritaGames').doc(gameId).collection('teamPins').onSnapshot(s=>{
+  takimPinDinleyici=firebaseDb.collection('games').doc(gameId).collection('teamPins').onSnapshot(s=>{
    const stage=Number(localStorage.getItem(STORAGE_KEY_STAGE)||0),gelen=new Set();s.docs.forEach(d=>{const p=d.data();if(p.teamId!==teamId)return;if(d.id===firebaseUser.uid)return;if(Number(p.stage)!==stage||!Number.isFinite(Number(p.lat))||!Number.isFinite(Number(p.lng)))return;gelen.add(d.id);const pos={lat:Number(p.lat),lng:Number(p.lng)},icon=pinIkonu(p.playerAvatar||basHarf(p.playerName),renk(p.uid));if(takimMarkerlar[d.id]){takimMarkerlar[d.id].setPosition(pos);takimMarkerlar[d.id].setIcon(icon)}else takimMarkerlar[d.id]=new google.maps.Marker({position:pos,map:tahminHaritasi,title:p.playerName||'Takım oyuncusu',icon,zIndex:50});});Object.keys(takimMarkerlar).forEach(id=>{if(!gelen.has(id)){takimMarkerlar[id].setMap(null);delete takimMarkerlar[id]}});
   },e=>{console.error('Takim pinleri dinlenemedi',e);const m=document.getElementById('mesajAlani');if(m)m.textContent='⚠️ Takım pinleri alınamadı: '+(e.code||e.message);});
  }
  const eskiInit=window.initMap;
  window.initMap=async function(){const r=await eskiInit.apply(this,arguments);setTimeout(pinleriDinle,400);return r};
  async function takimSkorlari(id){
-  const [ts,ps]=await Promise.all([firebaseDb.collection('miniHaritaGames').doc(id).collection('teams').get(),firebaseDb.collection('miniHaritaGames').doc(id).collection('players').get()]);
+  const [ts,ps]=await Promise.all([firebaseDb.collection('games').doc(id).collection('teams').get(),firebaseDb.collection('games').doc(id).collection('players').get()]);
   const players=ps.docs.map(d=>({id:d.id,...d.data()})),teams=ts.docs.map(d=>({id:d.id,...d.data()}));
   return teams.map(t=>{
     const uyeler=players.filter(p=>p.teamId===t.id);
@@ -2702,7 +2684,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   document.body.appendChild(x);
  };
  // Sayfa açılışında rumuz isteme; takım seçimi yalnızca Oyuna Gir tıklanınca açılır.
- window.acilisKarari=async function(){const id=aktifOyunId();if(oyunModu()==='play'&&id){const gs=await firebaseDb.collection('miniHaritaGames').doc(id).get(),ps=await firebaseDb.collection('miniHaritaGames').doc(id).collection('players').doc(firebaseUser.uid).get();if(gs.exists&&ps.exists&&!ps.data().completed){const p=ps.data();if(p.teamId){localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');if(p.ready!==true){seciliOyunId=id;seciliOyun=gs.data();beklemeTeamId=p.teamId;beklemeTeamName=p.teamName||'Takım';beklemeRumuz=p.playerName||'Oyuncu';anaSayfayiGoster();takimBeklemeAc();return}}oyunEkraniniGoster();return}if(gs.exists&&ps.exists&&ps.data().completed){sonucEkraniniAc(id,gs.data().name||id);return}}await anaSayfayiYukle()};
+ window.acilisKarari=async function(){const id=aktifOyunId();if(oyunModu()==='play'&&id){const gs=await firebaseDb.collection('games').doc(id).get(),ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();if(gs.exists&&ps.exists&&!ps.data().completed){const p=ps.data();if(p.teamId){localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');if(p.ready!==true){seciliOyunId=id;seciliOyun=gs.data();beklemeTeamId=p.teamId;beklemeTeamName=p.teamName||'Takım';beklemeRumuz=p.playerName||'Oyuncu';anaSayfayiGoster();takimBeklemeAc();return}}oyunEkraniniGoster();return}if(gs.exists&&ps.exists&&ps.data().completed){sonucEkraniniAc(id,gs.data().name||id);return}}await anaSayfayiYukle()};
 })();
 </script>
 <style id="takimSenkronCss">
@@ -2831,7 +2813,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   document.getElementById('tahminButonu')?.classList.add('hidden');
   beklemeGoster(stage,[]);
   if(asamaDinleyici){asamaDinleyici();asamaDinleyici=null;}
-  asamaDinleyici=firebaseDb.collection('miniHaritaGames').doc(gameId).collection('players').where('teamId','==',tid)
+  asamaDinleyici=firebaseDb.collection('games').doc(gameId).collection('players').where('teamId','==',tid)
    .onSnapshot(s=>{
     const uyeler=s.docs.map(d=>d.data());
     beklemeGoster(stage,uyeler);
@@ -2882,7 +2864,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   try{
    const gameId=(typeof aktifOyunId==='function')?aktifOyunId():'';
    if(!firebaseHazir||!firebaseUser||!gameId) return;
-   const ps=await firebaseDb.collection('miniHaritaGames').doc(gameId).collection('players').doc(firebaseUser.uid).get();
+   const ps=await firebaseDb.collection('games').doc(gameId).collection('players').doc(firebaseUser.uid).get();
    if(!ps.exists) return;
    const p=ps.data();
    if(p.teamId){
@@ -3026,12 +3008,12 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   if(baslatildi) return;
   baslatildi=true;
   try{
-   const gs=await firebaseDb.collection('miniHaritaGames').doc(gameId).get();
+   const gs=await firebaseDb.collection('games').doc(gameId).get();
    if(!gs.exists){baslatildi=false;return;}
    const benim=uyeler.find(u=>u.uid===firebaseUser.uid)||{};
    const teamId=benim.teamId||localStorage.getItem(TEAM_KEY);
    if(!teamId){throw new Error('Takım bilgisi bulunamadı.');}
-   const teamRef=firebaseDb.collection('miniHaritaGames').doc(gameId).collection('teams').doc(teamId);
+   const teamRef=firebaseDb.collection('games').doc(gameId).collection('teams').doc(teamId);
    await firebaseDb.runTransaction(async tx=>{
     const ts=await tx.get(teamRef);if(!ts.exists)throw new Error('Takım bulunamadı.');
     const t=ts.data(),durum=t.status||'open';if(!['open','playing'].includes(durum))throw new Error('Bu takım artık oynanamaz.');
@@ -3059,7 +3041,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   if(!gameId||!teamId){ if(msg) msg.textContent='Oyun/tak\u0131m bilgisi bulunamad\u0131. L\u00fctfen oday\u0131 kapat\u0131p tekrar kat\u0131l.'; return; }
   if(hazirDinleyici){hazirDinleyici();hazirDinleyici=null;}
   baslatildi=false;
-  hazirDinleyici=firebaseDb.collection('miniHaritaGames').doc(gameId).collection('players').where('teamId','==',teamId)
+  hazirDinleyici=firebaseDb.collection('games').doc(gameId).collection('players').where('teamId','==',teamId)
    .onSnapshot(snap=>{
     const uyeler=snap.docs.map(d=>d.data()).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
     listeYaz(uyeler);
@@ -3079,7 +3061,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   btn.disabled=true;
   if(msg) msg.textContent='Haz\u0131r i\u015faretlendin. Tak\u0131m arkada\u015flar\u0131n bekleniyor...';
   try{
-   await firebaseDb.collection('miniHaritaGames').doc(gameId).collection('players').doc(firebaseUser.uid)
+   await firebaseDb.collection('games').doc(gameId).collection('players').doc(firebaseUser.uid)
     .set({ready:true,readyAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
    if(!hazirDinleyici) odayiDinle();
    // Tek kisilik takimda beklemeden baslatma yok; digerleri hazir olunca dinleyici tetikler.
@@ -3094,7 +3076,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   if(hazirDinleyici){hazirDinleyici();hazirDinleyici=null;}
   const gameId=beklemeOyunId();
   if(firebaseHazir&&firebaseUser&&gameId){
-   firebaseDb.collection('miniHaritaGames').doc(gameId).collection('players').doc(firebaseUser.uid)
+   firebaseDb.collection('games').doc(gameId).collection('players').doc(firebaseUser.uid)
     .set({ready:false,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(console.error);
   }
   document.getElementById('takimBeklemeModal')?.classList.add('hidden');
@@ -3141,7 +3123,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  }
 
  async function takimTamamHazirMi(gameId,teamId){
-  const snap=await firebaseDb.collection('miniHaritaGames').doc(gameId).collection('players').where('teamId','==',teamId).get();
+  const snap=await firebaseDb.collection('games').doc(gameId).collection('players').where('teamId','==',teamId).get();
   const uyeler=snap.docs.map(d=>d.data());
   return uyeler.length>=2 && uyeler.every(u=>u.ready===true);
  }
@@ -3151,7 +3133,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   try{
    const id=aktifOyunId();
    if(oyunModu()==='play' && id && firebaseHazir && firebaseUser){
-    const ps=await firebaseDb.collection('miniHaritaGames').doc(id).collection('players').doc(firebaseUser.uid).get();
+    const ps=await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).get();
     if(ps.exists){
      const p=ps.data();
      if(p.teamId && !p.completed){
@@ -3159,7 +3141,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
       if(!hepsi){ beklemeOdasiniAc(id,p.teamId,p.teamName); return; }
       const stageKey=id+'_haritaBulmacasi_current_stage';
       if(!localStorage.getItem(stageKey)){
-       const gs=await firebaseDb.collection('miniHaritaGames').doc(id).get();
+       const gs=await firebaseDb.collection('games').doc(id).get();
        if(gs.exists){localStorage.setItem('haritaOyunTuru','team');localStorage.setItem(TEAM_KEY,p.teamId);localStorage.setItem(TEAM_NAME_KEY,p.teamName||'Takım');oyunAyarlariniYereleYaz(gs.data());oyunuYereldeHazirla(id,gs.data().targets,p.playerName||globalOyuncuAdiAl()||'Oyuncu',1);oyunEkraniniGoster();if(typeof initMap==='function')setTimeout(()=>initMap(),0);return;}
       }
      }
@@ -3207,7 +3189,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
    }
    if(!Object.keys(veri).length) return;
    veri.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
-   await firebaseDb.collection('miniHaritaGames').doc(gameId).collection('players').doc(firebaseUser.uid).set(veri,{merge:true});
+   await firebaseDb.collection('games').doc(gameId).collection('players').doc(firebaseUser.uid).set(veri,{merge:true});
   }catch(e){ console.error('Asama suresi kaydedilemedi',e); }
  }
 
@@ -3461,7 +3443,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
 (function(){
  async function oyunAyariniAl(id){
   try{
-   const g=await firebaseDb.collection('miniHaritaGames').doc(id).get();
+   const g=await firebaseDb.collection('games').doc(id).get();
    return g.exists?g.data():null;
   }catch(e){ console.error('Oyun ayari alinamadi',e); return null; }
  }
@@ -3602,7 +3584,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
  window.firebaseUyelikHata=function(t){msg(t)};
  window.profilAc=function(){if(!aktifProfil)return;seciliAvatar=aktifProfil.avatar||'🎯';document.getElementById('uyelikGirisKayit').classList.add('hidden');document.getElementById('profilAyarAlani').classList.remove('hidden');document.getElementById('profilAd').textContent=aktifProfil.username;document.getElementById('profilAvatarBuyuk').textContent=seciliAvatar;document.getElementById('profilMesaj').textContent='';grid('profilAvatarGrid',seciliAvatar);document.getElementById('uyelikKapisi').classList.remove('hidden')};
  window.profilKapat=function(){document.getElementById('uyelikKapisi').classList.add('hidden')};
- window.profilAvatarKaydet=async function(){if(!firebaseUser)return;const m=document.getElementById('profilMesaj');try{await firebaseDb.collection('users').doc(firebaseUser.uid).update({avatar:seciliAvatar,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});await firebaseDb.collection('userDirectory').doc(firebaseUser.uid).set({uid:firebaseUser.uid,username:aktifProfil.username,avatar:seciliAvatar,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});aktifProfil.avatar=seciliAvatar;localStorage.setItem(GLOBAL_OYUNCU_AVATAR_KEY,seciliAvatar);const id=aktifOyunId();if(id)await firebaseDb.collection('miniHaritaGames').doc(id).collection('players').doc(firebaseUser.uid).set({playerAvatar:seciliAvatar,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});m.textContent='✅ Avatar Firebase profilinde güncellendi.';m.style.color='#047857';profilButonlariniGuncelle();kayitliKullanicilariYukle()}catch(e){m.textContent='Avatar güncellenemedi: '+e.message;m.style.color='#b91c1c'}};
+ window.profilAvatarKaydet=async function(){if(!firebaseUser)return;const m=document.getElementById('profilMesaj');try{await firebaseDb.collection('users').doc(firebaseUser.uid).update({avatar:seciliAvatar,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});await firebaseDb.collection('userDirectory').doc(firebaseUser.uid).set({uid:firebaseUser.uid,username:aktifProfil.username,avatar:seciliAvatar,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});aktifProfil.avatar=seciliAvatar;localStorage.setItem(GLOBAL_OYUNCU_AVATAR_KEY,seciliAvatar);const id=aktifOyunId();if(id)await firebaseDb.collection('games').doc(id).collection('players').doc(firebaseUser.uid).set({playerAvatar:seciliAvatar,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});m.textContent='✅ Avatar Firebase profilinde güncellendi.';m.style.color='#047857';profilButonlariniGuncelle();kayitliKullanicilariYukle()}catch(e){m.textContent='Avatar güncellenemedi: '+e.message;m.style.color='#b91c1c'}};
  window.uyelikCikis=async function(){await firebase.auth().signOut();localStorage.removeItem(GLOBAL_OYUNCU_ADI_KEY);localStorage.removeItem(GLOBAL_OYUNCU_AVATAR_KEY)};
  function profilButonlariniGuncelle(){if(!aktifProfil)return;const hedef=`${aktifProfil.avatar||'🎯'} ${aktifProfil.username} ⚙️`;document.querySelectorAll('.profil-btn').forEach(b=>{if(b.textContent!==hedef)b.textContent=hedef})}
  function profilButonuEkle(){if(!aktifProfil)return;document.querySelectorAll('.hub-head,.home-head').forEach(h=>{let b=h.querySelector('.profil-btn');if(!b){b=document.createElement('button');b.type='button';b.className='profil-btn';b.onclick=profilAc;h.appendChild(b)}});profilButonlariniGuncelle()}
@@ -3638,8 +3620,8 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   try{
    if(localStorage.getItem('haritaOyunTuru')!=='team')return r;
    const gid=aktifOyunId(),tid=localStorage.getItem('haritaAktifTakimId');if(!gid||!tid)return r;
-   const tr=firebaseDb.collection('miniHaritaGames').doc(gid).collection('teams').doc(tid),ts=await tr.get();if(!ts.exists)return r;
-   const ps=await firebaseDb.collection('miniHaritaGames').doc(gid).collection('players').where('teamId','==',tid).get(),map=new Map(ps.docs.map(d=>[d.id,d.data()]));
+   const tr=firebaseDb.collection('games').doc(gid).collection('teams').doc(tid),ts=await tr.get();if(!ts.exists)return r;
+   const ps=await firebaseDb.collection('games').doc(gid).collection('players').where('teamId','==',tid).get(),map=new Map(ps.docs.map(d=>[d.id,d.data()]));
    const kadro=ts.data().lockedMemberUids||[...map.keys()];
    if(kadro.length&&kadro.every(uid=>map.get(uid)?.completed===true))await tr.update({status:'completed',completedAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
   }catch(e){console.error('Takım tamamlanamadı',e)}
@@ -3664,7 +3646,7 @@ tahminGonder=async function(){const asama=Number(localStorage.getItem(STORAGE_KE
   durum.textContent='Sonuçlar ve puanlar yenileniyor...';
   try{
    const id=(typeof aktifOyunId==='function'?aktifOyunId():'')||SERIES_ID;
-   const [gs,snap]=await Promise.all([firebaseDb.collection('miniHaritaGames').doc(id).get(),firebaseDb.collection('miniHaritaGames').doc(id).collection('players').get()]);
+   const [gs,snap]=await Promise.all([firebaseDb.collection('games').doc(id).get(),firebaseDb.collection('games').doc(id).collection('players').get()]);
    if(gs.exists){puanOlceginiUygula(gs.data().puanOlcek);puanSuresiniUygula(gs.data().timerSeconds)}
    const rows=snap.docs.map(d=>d.data()).map(r=>({...r,_puan:oyuncuToplamPuan(r)})).sort((a,b)=>{const ap=Number.isFinite(a._puan)?a._puan:-1,bp=Number.isFinite(b._puan)?b._puan:-1;if(bp!==ap)return bp-ap;return Number(a.totalKm??Infinity)-Number(b.totalKm??Infinity)});
    const konumSira=[1,2,3].map(n=>konumSiralamasi(rows,n));
